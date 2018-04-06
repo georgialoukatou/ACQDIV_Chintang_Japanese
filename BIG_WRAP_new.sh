@@ -32,34 +32,39 @@ ROOT="/scratch2/gloukatou/master_project/rerun"
 mkdir $ROOT/$LANGUAGE
 mkdir $ROOT/$LANGUAGE/$LEVEL
  
-INPUT_FILE="/scratch2/gloukatou/master_project/acqdiv_corpus_2017-09-28_CRJ.rda"
-RESULT_FOLDER="$ROOT/$LANGUAGE/$LEVEL"
-SCRIPT_FOLDER="/scratch2/gloukatou/CDSwordSeg/recipes/acqDiv"
+INPUT_FILE="/scratch2/gloukatou/master_project/acqdiv_corpus_2017-09-28_CRJ.rda" #where the database is
+RESULT_FOLDER="$ROOT/$LANGUAGE/$LEVEL" 
+SCRIPT_FOLDER="/scratch2/gloukatou/CDSwordSeg/recipes/acqDiv" #where the scripts are
 
 
-#[3] extract input from rda file, without children utterances
+#[3] extract input from rda file, without children utterances and save at file extracted_raw.txt
 Rscript $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $RESULT_FOLDER/extracted_raw.txt $LANGUAGE $LEVEL
-
-#remove utterances with ? or NA
-grep -v -e "?" -e "NA"  $RESULT_FOLDER/extracted_raw.txt  >$RESULT_FOLDER/extracted_clean.txt
+grep -v -e "?" -e "NA"  $RESULT_FOLDER/extracted_raw.txt  >$RESULT_FOLDER/extracted_clean.txt #remove utterances with ? or NA
 
 #[4]
 #FOR CHINTANG ONLY, Nepali words have been extracted using script "sel_nepali_from_acqdiv.r" and saved as nepali_words.txt.
-#sed -i -e 's/-//g' -e '/^\s*$/d' $RESULT_FOLDER/extracted_clean.txt
-#if LEVEL=utterance:
-#python2 $SCRIPT_FOLDER/remove_nepali.py $SCRIPT_FOLDER/nepali_words.txt $RESULT_FOLDER/extracted_clean.txt $RESULT_FOLDER/extracted_clean_nonepali.txt 
-#python2 $SCRIPT_FOLDER/remove_nepali.py $SCRIPT_FOLDER/english_words.txt $RESULT_FOLDER/extracted_clean_nonepali.txt $RESULT_FOLDER/extracted_clean_nonepali1.txt
-#if LEVEL=utterance_morphemes:
-#python2 $SCRIPT_FOLDER/remove_nepalim.py $SCRIPT_FOLDER/nepali_words.txt $RESULT_FOLDER/extracted_clean.txt $RESULT_FOLDER/extracted_clean_nonepali.txt
-#python2 $SCRIPT_FOLDER/remove_nepalim.py $SCRIPT_FOLDER/english_words.txt $RESULT_FOLDER/extracted_clean_nonepali.txt $RESULT_FOLDER/extracted_clean_nonepali1.txt
-#mv $RESULT_FOLDER/extracted_clean_nonepali1.txt $RESULT_FOLDER/extracted_clean1.txt
+#FOR BOTH LANGUAGES, English words have to be removed.
+sed -i -e 's/-//g' -e '/^\s*$/d' $RESULT_FOLDER/extracted_clean.txt
 
-
-#FOR JAPANESE ONLY, remove English words.
-#if LEVEL=utterance_morphemes:
-#python2 $SCRIPT_FOLDER/remove_nepalim.py $SCRIPT_FOLDER/english_words.txt $RESULT_FOLDER/extracted_clean.txt $RESULT_FOLDER/extracted_clean1.txt
-#if LEVEL=utterance:
-#python2 $SCRIPT_FOLDER/remove_nepali.py $SCRIPT_FOLDER/english_words.txt $RESULT_FOLDER/extracted_clean.txt $RESULT_FOLDER/extracted_clean1.txt
+if [$LANGUAGE=="Chintang"]
+then
+ if [$LEVEL=="utterance"]
+ then
+ python2 $SCRIPT_FOLDER/remove_nepali.py $SCRIPT_FOLDER/nepali_words.txt $RESULT_FOLDER/extracted_clean.txt $RESULT_FOLDER/extracted_clean_nonepali.txt 
+ python2 $SCRIPT_FOLDER/remove_nepali.py $SCRIPT_FOLDER/english_words.txt $RESULT_FOLDER/extracted_clean_nonepali.txt $RESULT_FOLDER/extracted_clean_nonepali1.txt
+ else
+ python2 $SCRIPT_FOLDER/remove_nepalim.py $SCRIPT_FOLDER/nepali_words.txt $RESULT_FOLDER/extracted_clean.txt $RESULT_FOLDER/extracted_clean_nonepali.txt
+ python2 $SCRIPT_FOLDER/remove_nepalim.py $SCRIPT_FOLDER/english_words.txt $RESULT_FOLDER/extracted_clean_nonepali.txt $RESULT_FOLDER/extracted_clean_nonepali1.txt
+ mv $RESULT_FOLDER/extracted_clean_nonepali1.txt $RESULT_FOLDER/extracted_clean1.txt 
+ fi
+else
+ if [$LEVEL=="utterance"]
+ then
+ python2 $SCRIPT_FOLDER/remove_nepali.py $SCRIPT_FOLDER/english_words.txt $RESULT_FOLDER/extracted_clean.txt $RESULT_FOLDER/extracted_clean1.txt
+ else
+ python2 $SCRIPT_FOLDER/remove_nepalim.py $SCRIPT_FOLDER/english_words.txt $RESULT_FOLDER/extracted_clean.txt $RESULT_FOLDER/extracted_clean1.txt
+ fi
+fi
 
 #[5]
 #sed -i -e 's/^[ \t]*//g' -e '/^[ \t]*$/d' $RESULT_FOLDER/concatenate extracted_clean1.txt
