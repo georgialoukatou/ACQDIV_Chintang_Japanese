@@ -290,7 +290,7 @@ for ORTHO in ${RES_FOLDER}/divided_corpus.txt; do
 		sed 's/\//;esyll/g'|		
 		sed 's/;esyll ;esyll/;esyll/g' |
 		##sed 's/ /;eword/g' |
-		##sed -e 's/\(.\)/\1 /g'  |
+		sed -e 's/\(.\)/\1 /g'  |
 		sed 's/; e w o r d/ ;eword /g' |
 		sed 's/; e s y l l/ ;esyll /g'|
 		##sed 's/\// ;esyll /g'|
