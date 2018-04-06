@@ -36,7 +36,6 @@ INPUT_FILE="/scratch2/gloukatou/master_project/acqdiv_corpus_2017-09-28_CRJ.rda"
 RESULT_FOLDER="$ROOT/$LANGUAGE/$LEVEL" 
 SCRIPT_FOLDER="/scratch2/gloukatou/CDSwordSeg/recipes/acqDiv" #where the scripts are
 
-
 #[3] extract input from rda file, without children utterances and save at file extracted_raw.txt
 Rscript $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $RESULT_FOLDER/extracted_raw.txt $LANGUAGE $LEVEL
 grep -v -e "?" -e "NA"  $RESULT_FOLDER/extracted_raw.txt  > $RESULT_FOLDER/extracted_clean.txt #remove utterances with ? or NA
