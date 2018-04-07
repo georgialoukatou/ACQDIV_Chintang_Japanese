@@ -2,7 +2,7 @@
 # Wrapper to take a single cleaned up transcript and phonologize it
 # Alex Cristia alecristia@gmail.com 2015-10-26
 # Modified by Laia Fibla laia.fibla.reixachs@gmail.com 2016-09-28 adapted to arg spanish
-# Modified by Georgia Loukatou georgialoukatou@gmail.com 2017-04-02 adapted to chintang, japanese, russian 
+# Modified by Georgia Loukatou georgialoukatou@gmail.com 2017-04-02 adapted to chintang, japanese
 
 
 #########VARIABLES
