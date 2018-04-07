@@ -27,32 +27,32 @@ for ORTHO in ${RES_FOLDER}/divided_corpus.txt; do
  tr '[:upper:]' '[:lower:]' < "$ORTHO"  | 
 	  sed 's/ $//g' | #
 	  sed 's/^$//g' | #
-	 sed 's/_pres//g'|
-         sed 's/_imp//g'|
-         sed 's/_adv//g'|
-           sed 's/_sger//g'|
-           sed 's/_beg//g'|
-           sed 's/_pol//g'|
-           sed 's/_conn//g'|
-           sed 's/_past//g'|
-           sed 's/_cond//g'|
-           sed 's/_pass//g' |
-           sed 's/_quot//g'|
-           sed 's/_caus//g'|
-           sed 's/&pres//g' |
-           sed 's/&pre//g' |
-           sed 's/&imp//g'|
-           sed 's/&adv//g'|
-         sed 's/&sger//g'|
-         sed 's/&neg//g' |
-         sed  's/&pol//g' |
-         sed 's/&conn//g' |
-         sed 's/&past//g'|
-         sed 's/&cond//g'|
-         sed 's/&pass//g' |
-         sed 's/&quot//g' |
-    	 sed 's/&caus//g' |
-         sed 's/NA//g' |
+	  sed 's/_pres//g'|
+          sed 's/_imp//g'|
+          sed 's/_adv//g'|
+          sed 's/_sger//g'|
+          sed 's/_beg//g'|
+          sed 's/_pol//g'|
+          sed 's/_conn//g'|
+          sed 's/_past//g'|
+          sed 's/_cond//g'|
+          sed 's/_pass//g' |
+          sed 's/_quot//g'|
+          sed 's/_caus//g'|
+          sed 's/&pres//g' |
+          sed 's/&pre//g' |
+          sed 's/&imp//g'|
+          sed 's/&adv//g'|
+          sed 's/&sger//g'|
+          sed 's/&neg//g' |
+          sed  's/&pol//g' |
+          sed 's/&conn//g' |
+          sed 's/&past//g'|
+          sed 's/&cond//g'|
+          sed 's/&pass//g' |
+          sed 's/&quot//g' |
+    	  sed 's/&caus//g' |
+          sed 's/NA//g' |
 	  sed 's/^[bcdfghjklmnpqrstvwxz]$//g' |
 	  sed 's/ch/C/g' | 
 	  sed 's/tt/T/g' | #double consonants
