@@ -111,10 +111,18 @@ cat $VERSION/prepared_syll.txt | wordseg-tp -t absolute -p backward > $VERSION/r
 cat $VERSION/results/segmented.btp_abs.txt | wordseg-eval $VERSION/gold.txt > $VERSION/results/eval.btp_abs.txt
 
 
-cat $THISTAG | wordseg-prep --gold $VERSION/results/gold.txt > $VERSION/results/prepared.txt
-head -5400 $THISTAG > $VERSION/results/train.txt # change head - corpus size differs
+size=$(wc -l <"$VERSION/results/prepared.txt")
+echo "$size"
+
+head -"${size}" $THISTAG > $VERSION/results/train.txt
+head -200  $THISTAG > $VERSION/results/train200.txt
+
 wordseg-dibs -t phrasal -o $VERSION/results/segmented.dibs.txt $VERSION/results/prepared.txt  $VERSION/results/train.txt
 wordseg-eval -o $VERSION/results/eval.dibs.txt $VERSION/results/segmented.dibs.txt $VERSION/results/gold.txt
+
+wordseg-dibs -t phrasal -o $VERSION/results/segmented.dibs200.txt $VERSION/results/prepared.txt  $VERSION/results/train200.txt
+wordseg-eval -o $VERSION/results/eval.dibs200.txt $VERSION/results/segmented.dibs200.txt $VERSION/results/gold.txt
+
 
 module load python-anaconda
 wordseg-ag $VERSION/results/prepared.txt $SCRIPT_FOLDER/Colloc0_acqdiv.lt Colloc0 -n 2000 -vv > ${VERSION}/results/segmented.ag.txt
