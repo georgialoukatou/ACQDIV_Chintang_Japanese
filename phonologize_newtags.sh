@@ -98,12 +98,13 @@ for ORTHO in ${RES_FOLDER}/divided_corpus.txt; do
 	  sed 's/ti/tJi/g' |
 	  sed 's/tu/tsu/g' | #no tu, ti 
 	  sed 's/wi/i/g' |
-	 sed 's/wu/u/g' | #(w)i, (w)e, (w)o, (w)u
+	  sed 's/wu/u/g' | #(w)i, (w)e, (w)o, (w)u
 	  sed 's/we/e/g' |
 	  sed 's/wo/o/g' |
 	  sed 's/nja/La/g' |
-	 sed 's/-/ /g' | 
-	 sed 's/ə/e/g' > $RES_FOLDER/intoperl.tmp
+	  sed 's/-/ /g' | 
+	  tr -s "\'" ' '|
+	  sed 's/ə/e/g' > $RES_FOLDER/intoperl.tmp
 
 	  echo "syllabify-corpus.pl"
 	  perl $PATH_TO_SCRIPTS/new-syllabify-corpus.pl $LANGUAGE $RES_FOLDER/intoperl.tmp $RES_FOLDER/outofperl.tmp $PATH_TO_SCRIPTS
@@ -280,7 +281,6 @@ for ORTHO in ${RES_FOLDER}/divided_corpus.txt; do
 		sed 's/  / /g'|		
 		sed 's/^\s//g' |
 		sed 's/ \//\/ \//g'|
-		tr -s "\'" ' '|
 		sed 's/ $/\/ /g' |
 		#sed 's/^\///g' |
 		sed 's/^[ \t]*//g' |
