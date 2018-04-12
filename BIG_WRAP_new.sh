@@ -128,6 +128,20 @@ module load python-anaconda
 wordseg-ag $VERSION/results/prepared.txt $SCRIPT_FOLDER/Colloc0_acqdiv.lt Colloc0 -n 2000 -vv > ${VERSION}/results/segmented.ag.txt
 cat $VERSION/results/segmented.ag.txt | wordseg-eval $VERSION/results/gold.txt > $VERSION/results/eval.ag.txt
 
+#baselines
+cat ${VERSION}/prepared_syll.txt | wordseg-baseline -P 1 > ${VERSION}/results/segmented.baselinesyll1.txt
+cat ${VERSION}/results/segmented.baselinesyll1.txt | wordseg-eval ${VERSION}/gold.txt > ${VERSION}/results/eval.baselinesyll1.txt
+
+cat ${VERSION}/prepared_syll.txt | wordseg-baseline -P 0 > ${VERSION}/results/segmented.baselinesyll0.txt
+cat ${VERSION}/results/segmented.baselinesyll0.txt | wordseg-eval ${VERSION}/gold_tp.txt > ${VERSION}/results/eval.baselinesyll0.txt
+
+cat ${VERSION}/prepared_syll.txt | wordseg-baseline -P 0 > ${VERSION}/results/segmented.baselinesyll0.5.txt
+cat ${VERSION}/results/segmented.baselinesyll0.5.txt | wordseg-eval ${VERSION}/gold_tp.txt > ${VERSION}/results/eval.baselinesyll0.5.txt
+
+#statistics
+wordseg-stats ${VERSION}/clean_corpus-tags.txt -o ${VERSION}/descript_stats.txt
+
+
 
 #PATH_TO_OLD_WORDSEG="/scratch2/gloukatou/CDSwordSeg"
 #python $PATH_TO_OLD_WORDSEG/algoComp/segment_jap.py $THISTAG --goldfile $THISGOLD \
