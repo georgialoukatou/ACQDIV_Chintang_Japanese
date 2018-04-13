@@ -6,21 +6,17 @@
 
 
 #########VARIABLES
-#Variables to modify
 LANGUAGE=$1
-
-
 PATH_TO_SCRIPTS=$2
-#path to the phonologization folder - E.g. PATH_TO_SCRIPTS="/home/xcao/cao/projects/ANR_Alex/CDSwordSeg/phonologization/"
-
-RES_FOLDER=$3
-#this is where we will put the processed versions of the transcripts E.g. RES_FOLDER="/home/xcao/cao/projects/ANR_Alex/res_Childes_Eng-NA_cds/"
-# NOTICE THE / AT THE END OF THE NAME
+VERSION=$3	#this is the name of the input FOLDER
+#########
 
 LC_ALL=C
 
-for ORTHO in ${RES_FOLDER}/divided_corpus.txt; do
+for ORTHO in $VERSION; do
+	RES_FOLDER=$(dirname "$ORTHO")
 	KEYNAME=$(basename "$ORTHO" .txt)
+
 	if [ "$LANGUAGE" = "Japanese" ]
 	   then
 	  echo "recognized $LANGUAGE"
@@ -104,10 +100,10 @@ for ORTHO in ${RES_FOLDER}/divided_corpus.txt; do
 	  sed 's/nja/La/g' |
 	  sed 's/-/ /g' | 
 	  tr -s "\'" ' '|
-	  sed 's/ə/e/g' > $RES_FOLDER/intoperl.tmp
+	  sed 's/ə/e/g' > $RES_FOLDER/${KEYNAME}_intoperl.tmp
 
 	  echo "syllabify-corpus.pl"
-	  perl $PATH_TO_SCRIPTS/new-syllabify-corpus.pl $LANGUAGE $RES_FOLDER/intoperl.tmp $RES_FOLDER/outofperl.tmp $PATH_TO_SCRIPTS
+	  perl $PATH_TO_SCRIPTS/new-syllabify-corpus.pl $LANGUAGE $RES_FOLDER/${KEYNAME}_intoperl.tmp $RES_FOLDER/${KEYNAME}_outofperl.tmp $PATH_TO_SCRIPTS
 
 
 	elif [ "$LANGUAGE" = "Chintang" ]
@@ -200,16 +196,16 @@ for ORTHO in ${RES_FOLDER}/divided_corpus.txt; do
                 sed '/^$/d' |
 		sed 's/^ //g' |
 		sed 's/ptn/pn/g' | # second consonant droped if cluster of three, ptn
-		sed 's/ph/F/g' > $RES_FOLDER/intoperl.tmp
+		sed 's/ph/F/g' > $RES_FOLDER/${KEYNAME}_intoperl.tmp
 
 		echo "syllabify-corpus.pl"
-		perl $PATH_TO_SCRIPTS/new-syllabify-corpus.pl $LANGUAGE $RES_FOLDER/intoperl.tmp $RES_FOLDER/outofperl.tmp $PATH_TO_SCRIPTS
+		perl $PATH_TO_SCRIPTS/new-syllabify-corpus.pl $LANGUAGE $RES_FOLDER/${KEYNAME}_intoperl.tmp $RES_FOLDER/${KEYNAME}_outofperl.tmp $PATH_TO_SCRIPTS
 
 	fi
 
 		echo "removing blank lines"
 		LANG=C LC_CTYPE=C LC_ALL=C
-		sed '/^$/d' $RES_FOLDER/outofperl.tmp |
+		sed '/^$/d' $RES_FOLDER/${KEYNAME}_outofperl.tmp |
 		sed 's/_pres//g'|
 		sed 's/_imp//g'|
 		sed 's/_adv//g'| 
@@ -311,9 +307,9 @@ for ORTHO in ${RES_FOLDER}/divided_corpus.txt; do
 
 	echo "creating gold versions"
 
-		sed -e 's/;esyll//g' -e 's/?//g' < ${RES_FOLDER}/clean_corpus-tags.txt |
+		sed -e 's/;esyll//g' -e 's/?//g' < ${RES_FOLDER}/${KEYNAME}-tags.txt |
 		tr -d ' ' |
-		sed -e's/;eword/ /g'  -e 's/?//g' > ${RES_FOLDER}/clean_corpus-gold.txt
+		sed -e's/;eword/ /g'  -e 's/?//g' > ${RES_FOLDER}/${KEYNAME}-gold.txt
 
 
 done
@@ -323,8 +319,8 @@ done
 echo "end"
 
 ##pcregrep --color='auto' -n '[^\x00-\x7F]' $PROCESSED_FILE2
-sed -i 's/^ //g' ${RES_FOLDER}/clean_corpus-gold.txt
-sed -i 's/^;esyll;esyll;eword;esyl//g' ${RES_FOLDER}/clean_corpus-tags.txt
-sed -i 's/^;esyll;esyll;eword;//g' ${RES_FOLDER}/clean_corpus-tags.txt
-sed -i 's/^$//g' ${RES_FOLDER}/clean_corpus-gold.txt
-sed -i 's/^;esyll;esyll;eword//g' ${RES_FOLDER}/clean_corpus-tags.txt
+sed -i 's/^ //g' ${RES_FOLDER}/${KEYNAME}-gold.txt
+sed -i 's/^;esyll;esyll;eword;esyl//g' ${RES_FOLDER}/${KEYNAME}-tags.txt
+sed -i 's/^;esyll;esyll;eword;//g' ${RES_FOLDER}/${KEYNAME}-tags.txt
+sed -i 's/^$//g' ${RES_FOLDER}/${KEYNAME}-gold.txt
+sed -i 's/^;esyll;esyll;eword//g' ${RES_FOLDER}/${KEYNAME}-tags.txt
