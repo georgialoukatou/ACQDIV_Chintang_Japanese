@@ -52,6 +52,7 @@ for ORTHO in ${RES_FOLDER}/divided_corpus.txt; do
           sed 's/&pass//g' |
           sed 's/&quot//g' |
     	  sed 's/&caus//g' |
+	  sed 's/-/ -/g' |
           sed 's/NA//g' |
 	  sed 's/^[bcdfghjklmnpqrstvwxz]$//g' |
 	  sed 's/ch/C/g' | 
