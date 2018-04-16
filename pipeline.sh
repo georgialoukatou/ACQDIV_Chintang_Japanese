@@ -26,7 +26,7 @@ echo NSLOTS=$NSLOTS
 INPUT_FILE=$1
 SCRIPT_FOLDER=$2
 ROOT=$3
-HYPERCLEAN=$4
+N_PARTS=$4
 LANGUAGE=$5
 LEVEL=$6
 #######################
@@ -34,24 +34,19 @@ LEVEL=$6
 #derive local vars
 RESULT_FOLDER="$ROOT/$LANGUAGE/$LEVEL" 
 
-if [ HYPERCLEAN == "TRUE" ] ; do
-	PREPOSITION="full"
-else
-	PREPOSITION="noforeign"
-fi
-
 #create a result folder, with language and level subfolders
 mkdir -p $RESULT_FOLDER
  
-# extract input from rda file, without children utterances, clean and save 2 versions of the file
+# extract input from rda file, without children utterances, clean and save both versions of the file (the full one, and the one without foreign words)
 Rscript $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $RESULT_FOLDER $LANGUAGE $LEVEL
 
 # cut the ensuing file into 10 subparts
-bash $SCRIPT_FOLDER/cut.sh $RESULT_FOLDER/${PREPOSITION}_${LANGUAGE}_${LEVEL}.txt $RESULT_FOLDER/concatenate 10
+for PREPOSITION in noforeign full ; do
+	bash $SCRIPT_FOLDER/phonologize_newtags.sh $LANGUAGE $SCRIPT_FOLDER $RESULT_FOLDER/${PREPOSITION}.txt
 
+	bash $SCRIPT_FOLDER/cut.sh $RESULT_FOLDER/${PREPOSITION}-tags.txt $RESULT_FOLDER/split/ $N_PARTS
+done
 
-module load python-anaconda
-source activate wordseg
 
 # analyze each of the subparts 
 for VERSION in $RESULT_FOLDER/concatenate/*/${PREPOSITION}_${LANGUAGE}_${LEVEL}.txt
@@ -59,7 +54,6 @@ do
 	THISGOLD="$VERSION/clean_corpus-gold.txt"
 	THISTAG="${THISGOLD/gold/tags}"
 
-	bash $SCRIPT_FOLDER/phonologize_newtags.sh $LANGUAGE $SCRIPT_FOLDER $VERSION
 
 ######## STOPPED HERE!! I realized I'm not doing this right because I didn't get the organization
 

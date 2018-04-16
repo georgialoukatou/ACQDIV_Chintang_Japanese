@@ -5,11 +5,14 @@
 # Last changed Alex Cristia alecristia@gmail.com 2018-04-13
 # sample call Rscript sel_clean.r $INPUT_FILE $RESULT_FOLDER/extracted_raw.txt $LANGUAGE $LEVEL
 
+# get arguments passed by user
 args<-commandArgs(trailingOnly=TRUE)
 INPUT_FILE=args[1]
 RESULT_FOLDER=args[2]
 LANGUAGE=args[3]
 LEVEL=args[4]
+
+#derive local vars
 if(LEVEL == "words") selcol <-"utterance" else if(LEVEL=="morphemes") selcol<-"utterance_morphemes" else print("BAD LEVEL")
 
 acq<-load(INPUT_FILE)

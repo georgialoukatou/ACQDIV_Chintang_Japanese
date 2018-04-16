@@ -7,16 +7,22 @@
 ########################[1] COMPLETE
 # file information
 INPUT_FILE="/scratch2/gloukatou/master_project/acqdiv_corpus_2017-09-28_CRJ.rda" #where the database is
-SCRIPT_FOLDER="/scratch2/gloukatou/CDSwordSeg/recipes/acqDiv" 			#where the scripts are
-ROOT="/scratch2/gloukatou/master_project/rerun" 				#where you want results to be saved
-HYPERCLEAN="TRUE" # TRUE if you want to run the version without foreign words, FALSE otherwise
+SCRIPT_FOLDER="/scratch1/users/acristia/acqdiv/ACQDIV_Chintang_Japanese/"  	#where the scripts are
+ROOT="/scratch1/users/acristia/acqdiv/" 				#where you want results to be saved
+N_PARTS=10 # number of subcorpora to use to be able to draw confidence intervals
 #######################
 
+module load python-anaconda
+source activate wordseg
+
+
 for LANGUAGE in Chintang Japanese ; do
-	for LEVEL in utterance_morphemes utterance_words ; do
-		./pipeline.sh $INPUT_FILE $SCRIPT_FOLDER $ROOT $HYPERCLEAN $LANGUAGE $LEVEL 
+	for LEVEL in morphemes words ; do
+		./pipeline.sh $INPUT_FILE $SCRIPT_FOLDER $ROOT $N_PARTS $LANGUAGE $LEVEL 
 	done
 done
+
+source deactivate
 
 #CHECK
 #bash $SCRIPT_FOLDER/collapse_results.sh $LANGUAGE $LEVEL $ROOT
