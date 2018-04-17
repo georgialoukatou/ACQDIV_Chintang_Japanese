@@ -6,17 +6,18 @@
 
 ######################## USER, LOOK HERE
 # file information
-INPUT_FILE="/scratch1/users/acristia/acqdiv/acqdiv_corpus_2017-09-28_CRJ.rda" #where the database is
-SCRIPT_FOLDER="/scratch1/users/acristia/acqdiv/ACQDIV_Chintang_Japanese/" #where the scripts are
-ROOT="/scratch1/users/acristia/acqdiv/" #where you want results to be saved
+INPUT_FILE="/Users/acristia/Documents/acqdiv/acqdiv_corpus_2017-09-28_CRJ.rda" #where the database is
+SCRIPT_FOLDER="/Users/acristia/Documents/gitrepos/ACQDIV_Chintang_Japanese" #where the scripts are
+ROOT="/Users/acristia/Documents/acqdiv/" #where you want results to be saved
 N_PARTS=10 # number of subcorpora to use to be able to draw confidence intervals -- write in 1 if you want to analyze the full corpus (or if you're not rerunning the cleaning, phonologization and parsing,
 SELECTION="full" # by default, this script analyzes the full database; you can also rerun it with the option "noforeign", in which case we recommend the N_PARTS to be 1
 ####################### USER, ALL DONE!
 
 #------------ corpus preparation stage ------------#
 
-# extract all ortho versions from rda file, without children utterances, clean and save both versions of the file (the full one, and the one without foreign words), inside the root folder // note R CMD BATCH works on both linux and unix, Rscript wasn't working on oberon
-R CMD BATCH $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $ROOT
+# extract all ortho versions from rda file, without children utterances, clean and save both versions of the file (the full one, and the one without foreign words), inside the root folder 
+# NOTE !!! Rscript not working on oberon
+# RScript $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $ROOT
 
 # phonologize ALL the files in the root folder
 #bash $SCRIPT_FOLDER/phonologize.sh $SCRIPT_FOLDER $ROOT

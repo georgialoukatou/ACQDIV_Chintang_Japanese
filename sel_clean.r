@@ -3,16 +3,19 @@
 # Loops through all the corpora and levels
 # By Georgia Loukatou georgialoukatou@gmail.com
 # Last changed Alex Cristia alecristia@gmail.com 2018-04-13
-# sample call Rscript sel_clean.r $INPUT_FILE $RESULT_FOLDER/
 
 # get arguments passed by user
-args<-commandArgs(trailingOnly=TRUE)
-INPUT_FILE=args[1]
-RESULT_FOLDER=args[2]
+args<-commandArgs(TRUE)
+
+INPUT_FILE<-args[1]
+RESULT_FOLDER<-args[2]
+
+print(INPUT_FILE)
+print(RESULT_FOLDER)
 
 # local use
-# INPUT_FILE="acqdiv_corpus_2017-09-28_CRJ.rda"
-
+# INPUT_FILE="/Users/acristia/Documents/acqdiv/acqdiv_corpus_2017-09-28_CRJ.rda"
+# RESULT_FOLDER="/Users/acristia/Documents/acqdiv/"
 
 ######## CLEANING FUNCTIONS
 clean<-function(corpus){
