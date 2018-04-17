@@ -15,8 +15,8 @@ SELECTION="full" # by default, this script analyzes the full database; you can a
 
 #------------ corpus preparation stage ------------#
 
-# extract all ortho versions from rda file, without children utterances, clean and save both versions of the file (the full one, and the one without foreign words), inside the root folder
-Rscript $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $ROOT
+# extract all ortho versions from rda file, without children utterances, clean and save both versions of the file (the full one, and the one without foreign words), inside the root folder // note R CMD BATCH works on both linux and unix, Rscript wasn't working on oberon
+R CMD BATCH $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $ROOT
 
 # phonologize ALL the files in the root folder
 bash $SCRIPT_FOLDER/phonologize.sh $SCRIPT_FOLDER $ROOT
