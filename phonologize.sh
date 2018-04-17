@@ -24,6 +24,8 @@ for ORTHO in $ROOT/*.txt ; do
 	#derive local vars
 	RESULT_FOLDER="$ROOT/$LANGUAGE/$LEVEL" 
 
+echo processing $ORTHO into $RESULT_FOLDER
+
 	#create a result folder, with language and level subfolders
 	mkdir -p $RESULT_FOLDER
 
@@ -82,7 +84,7 @@ for ORTHO in $ROOT/*.txt ; do
 	  sed 's/nja/La/g' |
 	  sed 's/-/ /g' | 
 	  tr -s "\'" ' '|
-	  sed 's/ə/e/g' > RESULT_FOLDER/${COVERAGE}_intoperl.tmp
+	  sed 's/ə/e/g' > $RESULT_FOLDER/${COVERAGE}_intoperl.tmp
 
 
 
@@ -176,7 +178,7 @@ for ORTHO in $ROOT/*.txt ; do
 
 
 		echo "syllabify-corpus.pl"
-		perl $PATH_TO_SCRIPTS/new-syllabify-corpus.pl $RESULT_FOLDER/${COVERAGE}_intoperl.tmp $ROOT/${KEYNAME}_outofperl.tmp $PATH_TO_SCRIPTS
+		perl $PATH_TO_SCRIPTS/syllabify-corpus.pl $LANGUAGE $RESULT_FOLDER/${COVERAGE}_intoperl.tmp $RESULT_FOLDER/${COVERAGE}_outofperl.tmp $PATH_TO_SCRIPTS
 
 
 		echo "removing blank lines"

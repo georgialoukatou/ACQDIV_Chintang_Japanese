@@ -6,9 +6,9 @@
 
 ######################## USER, LOOK HERE
 # file information
-INPUT_FILE="/Users/acristia/Documents/acqdiv/acqdiv_corpus_2017-09-28_CRJ.rda" #where the database is
-SCRIPT_FOLDER="/Users/acristia/Documents/gitrepos/ACQDIV_Chintang_Japanese" #where the scripts are
-ROOT="/Users/acristia/Documents/acqdiv/" #where you want results to be saved
+#INPUT_FILE="/Users/acristia/Documents/acqdiv/acqdiv_corpus_2017-09-28_CRJ.rda" #where the database is
+SCRIPT_FOLDER="/scratch1/users/acristia/acqdiv/ACQDIV_Chintang_Japanese" #where the scripts are
+ROOT="/scratch1/users/acristia/acqdiv/" #where you want results to be saved
 N_PARTS=10 # number of subcorpora to use to be able to draw confidence intervals -- write in 1 if you want to analyze the full corpus (or if you're not rerunning the cleaning, phonologization and parsing,
 SELECTION="full" # by default, this script analyzes the full database; you can also rerun it with the option "noforeign", in which case we recommend the N_PARTS to be 1
 ####################### USER, ALL DONE!
@@ -20,7 +20,8 @@ SELECTION="full" # by default, this script analyzes the full database; you can a
 # RScript $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $ROOT
 
 # phonologize ALL the files in the root folder
-#bash $SCRIPT_FOLDER/phonologize.sh $SCRIPT_FOLDER $ROOT
+# FIX: output isn't right
+bash $SCRIPT_FOLDER/phonologize.sh $SCRIPT_FOLDER $ROOT
 
 # cut the ensuing files into 10 subparts
 #if [ "$N_PARTS" -gt 1 ]
