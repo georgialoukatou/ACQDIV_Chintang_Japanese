@@ -4,22 +4,46 @@
 # By Georgia Loukatou georgialoukatou@gmail.com
 # Last changed Alex Cristia alecristia@gmail.com 2018-04-13
 
-########################[1] COMPLETE
+######################## USER, LOOK HERE
 # file information
 INPUT_FILE="/scratch2/gloukatou/master_project/acqdiv_corpus_2017-09-28_CRJ.rda" #where the database is
 SCRIPT_FOLDER="/scratch1/users/acristia/acqdiv/ACQDIV_Chintang_Japanese/"  	#where the scripts are
 ROOT="/scratch1/users/acristia/acqdiv/" 				#where you want results to be saved
-N_PARTS=10 # number of subcorpora to use to be able to draw confidence intervals
-#######################
+N_PARTS=10 # number of subcorpora to use to be able to draw confidence intervals -- write in 1 if you want to analyze the full corpus (or if you're not rerunning the cleaning, phonologization and parsing,
+SELECTION="full" # by default, this script analyzes the full database; you can also rerun it with the option "noforeign", in which case we recommend the N_PARTS to be 1
+####################### USER, ALL DONE!
 
+#------------ corpus preparation stage ------------#
+
+# extract all ortho versions from rda file, without children utterances, clean and save both versions of the file (the full one, and the one without foreign words), inside the root folder
+Rscript $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $ROOT
+
+# phonologize ALL the files in the root folder
+bash $SCRIPT_FOLDER/phonologize.sh $SCRIPT_FOLDER $ROOT
+
+# cut the ensuing files into 10 subparts
+if [ "$N_PARTS" -gt 1 ]
+    for FILE in $ROOT/*/*/*-tags.txt ; do
+    	bash $SCRIPT_FOLDER/cut.sh $FILE $N_PARTS
+    done
+fi
+
+
+#------------ corpus analysis stage ------------#
 module load python-anaconda
 source activate wordseg
 
-
 for LANGUAGE in Chintang Japanese ; do
-	for LEVEL in morphemes words ; do
-		./pipeline.sh $INPUT_FILE $SCRIPT_FOLDER $ROOT $N_PARTS $LANGUAGE $LEVEL 
-	done
+    for LEVEL in morphemes words ; do
+
+		#derive local vars
+		RESULT_FOLDER="$ROOT/$LANGUAGE/$LEVEL" 
+
+		#create a result folder, with language and level subfolders
+		mkdir -p $RESULT_FOLDER
+
+		./analyze.sh $SCRIPT_FOLDER $RESULT_FOLDER $N_PARTS $SELECTION
+    done
 done
 
 source deactivate

@@ -6,13 +6,12 @@
 
 ##### Variables #####
 input_file=$1 		# path to the corpus that will be cut up
-output_folder=$2 	# path to the folder where you want to store the subparts
-divide=$3 		# number of sub-parts
+divide=$2 		# number of sub-parts
 ####################
 
-mkdir -p ${output_folder}
-
-file_name=`basename $input_file`
+ROOT=$(dirname "$input_file")
+KEYNAME=$(basename "$input_file" -tags.txt)
+output_folder=$ROOT/$KEYNAME/
 
 max=`wc -l $input_file | awk '{print $1}'`
 n=$(( $max / $divide ))
@@ -21,12 +20,14 @@ i=0
 while [ $i -lt $divide ]
 do
   echo in while $i
+
+  mkdir -p ${output_folder}/${i}
   ini=$(( $i * $n + 1 ))
   fin=$(( $ini + $n - 1 ))
 
-  echo sed -n ${ini},${fin}p $input_file > ${output_folder}/${i}/${file_name}
+  echo sed -n ${ini},${fin}p $input_file > ${output_folder}/${i}/tags.txt
   i=$(($i + 1 ))
 done
 
-echo $output
+echo done cutting
 

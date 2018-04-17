@@ -1,55 +1,37 @@
 #!/bin/sh
-# Wrapper to take a single cleaned up transcript and phonologize it
+# Wrapper to take a folder containing several cleaned up transcripts and phonologize them
 # Alex Cristia alecristia@gmail.com 2015-10-26
 # Modified by Laia Fibla laia.fibla.reixachs@gmail.com 2016-09-28 adapted to arg spanish
 # Modified by Georgia Loukatou georgialoukatou@gmail.com 2017-04-02 adapted to chintang, japanese
 
 
 #########VARIABLES
-LANGUAGE=$1
-PATH_TO_SCRIPTS=$2
-VERSION=$3	#this is the name of the input FOLDER
+PATH_TO_SCRIPTS=$1
+ROOT=$2	#this is the name of the input FOLDER
 #########
 
 LC_ALL=C
 
-for ORTHO in $VERSION; do
-	RES_FOLDER=$(dirname "$ORTHO")
+for ORTHO in $ROOT/*.txt ; do
+	ROOT=$(dirname "$ORTHO")
 	KEYNAME=$(basename "$ORTHO" .txt)
+
+	#decompose keyname to get relevant info; example full_Chintang_morphemes.txt
+	LANGUAGE=`echo $KEYNAME | cut -d "_" -f 2`
+	LEVEL=`echo $KEYNAME | cut -d "_" -f 3 | sed "s/.txt//"`
+	COVERAGE=`echo $KEYNAME | cut -d "_" -f 1`
+
+	#derive local vars
+	RESULT_FOLDER="$ROOT/$LANGUAGE/$LEVEL" 
+
+	#create a result folder, with language and level subfolders
+	mkdir -p $RESULT_FOLDER
+
 
 	if [ "$LANGUAGE" = "Japanese" ]
 	   then
 	  echo "recognized $LANGUAGE"
  tr '[:upper:]' '[:lower:]' < "$ORTHO"  | 
-	  sed 's/ $//g' | #
-	  sed 's/^$//g' | #
-	  sed 's/_pres//g'|
-          sed 's/_imp//g'|
-          sed 's/_adv//g'|
-          sed 's/_sger//g'|
-          sed 's/_beg//g'|
-          sed 's/_pol//g'|
-          sed 's/_conn//g'|
-          sed 's/_past//g'|
-          sed 's/_cond//g'|
-          sed 's/_pass//g' |
-          sed 's/_quot//g'|
-          sed 's/_caus//g'|
-          sed 's/&pres//g' |
-          sed 's/&pre//g' |
-          sed 's/&imp//g'|
-          sed 's/&adv//g'|
-          sed 's/&sger//g'|
-          sed 's/&neg//g' |
-          sed  's/&pol//g' |
-          sed 's/&conn//g' |
-          sed 's/&past//g'|
-          sed 's/&cond//g'|
-          sed 's/&pass//g' |
-          sed 's/&quot//g' |
-    	  sed 's/&caus//g' |
-          sed 's/NA//g' |
-	  sed 's/^[bcdfghjklmnpqrstvwxz]$//g' |
 	  sed 's/ch/C/g' | 
 	  sed 's/tt/T/g' | #double consonants
 	  sed 's/kk/K/g' | #double consonants
@@ -100,10 +82,8 @@ for ORTHO in $VERSION; do
 	  sed 's/nja/La/g' |
 	  sed 's/-/ /g' | 
 	  tr -s "\'" ' '|
-	  sed 's/ə/e/g' > $RES_FOLDER/${KEYNAME}_intoperl.tmp
+	  sed 's/ə/e/g' > RESULT_FOLDER/${COVERAGE}_intoperl.tmp
 
-	  echo "syllabify-corpus.pl"
-	  perl $PATH_TO_SCRIPTS/new-syllabify-corpus.pl $LANGUAGE $RES_FOLDER/${KEYNAME}_intoperl.tmp $RES_FOLDER/${KEYNAME}_outofperl.tmp $PATH_TO_SCRIPTS
 
 
 	elif [ "$LANGUAGE" = "Chintang" ]
@@ -168,7 +148,8 @@ for ORTHO in $VERSION; do
 		sed 's/Ë/e/g' |
 		sed 's/ɲ/n/g' |#no phonemic distinction
 		sed 's/hAA̴/ha/g' |
-		sed 's/¨//g'  |
+		sed 's/ptn/pn/g' | # second consonant dropped if cluster of three, ptn
+		sed 's/¨//g'  |# georgia please document this line and the following -- if this is cleaning of illegal chars, it should happen in the R file
 		sed 's/Œ ñ//g' |
 		sed 's/Œ £//g' |
 		sed 's/‡ • §//g' |
@@ -177,139 +158,45 @@ for ORTHO in $VERSION; do
 		sed 's/~//g'  |
 		sed 's/ʌ//g'  |
 		sed 's/˜//g'  |
-		#sed 's/\'//g' |
 		sed 's/।//g'  |
 		sed 's/̴̴//g'  |
-		#sed 's/"//g'  |
 		sed 's/̴//g'  |
 		sed 's/±//g'  |
-		sed 's/lUɡE//g' |
+		sed 's/lUɡE//g' |  # georgia please document this line and all of the following, as they seem arbitrary
 		sed 's/IɡIMA//g' |
 		sed 's/iɡiMa//g' |
 		sed 's/hu̪i/hui/g' |
 		sed 's/hãǃ/ha/g' |
 		sed 's/ɨ̵ŋ/1H/g' |
 		sed 's/luɡe//g' |
-		#sed 's/&//g' |
-		#sed '/^[ \t]*$/d' |
-                sed '/^ $/d'  |
-                sed '/^$/d' |
-		sed 's/^ //g' |
-		sed 's/ptn/pn/g' | # second consonant droped if cluster of three, ptn
-		sed 's/ph/F/g' > $RES_FOLDER/${KEYNAME}_intoperl.tmp
+		sed 's/ph/F/g' > $RESULT_FOLDER/${COVERAGE}_intoperl.tmp
 
-		echo "syllabify-corpus.pl"
-		perl $PATH_TO_SCRIPTS/new-syllabify-corpus.pl $LANGUAGE $RES_FOLDER/${KEYNAME}_intoperl.tmp $RES_FOLDER/${KEYNAME}_outofperl.tmp $PATH_TO_SCRIPTS
 
 	fi
 
+
+		echo "syllabify-corpus.pl"
+		perl $PATH_TO_SCRIPTS/new-syllabify-corpus.pl $RESULT_FOLDER/${COVERAGE}_intoperl.tmp $ROOT/${KEYNAME}_outofperl.tmp $PATH_TO_SCRIPTS
+
+
 		echo "removing blank lines"
 		LANG=C LC_CTYPE=C LC_ALL=C
-		sed '/^$/d' $RES_FOLDER/${KEYNAME}_outofperl.tmp |
-		sed 's/_pres//g'|
-		sed 's/_imp//g'|
-		sed 's/_adv//g'| 
-		sed 's/_sger//g'|
-		sed 's/_neg//g'|
-		sed 's/_pol//g'|
-		sed 's/_conn//g'|
-		sed 's/_past//g'|
-		sed 's/_cond//g'|
-		sed 's/_pass//g' |
-		sed 's/_quot//g'| 
-		sed 's/_caus//g'| 
-		sed 's/&pres//g' |
-		sed 's/&pre//g' |
-		sed 's/&imp//g'| 
-		sed 's/&adv//g'|
-		sed 's/&sger//g'| 
-		sed 's/&neg//g' |
-		sed 's/&pol//g' | 
-		sed 's/&conn//g' |
-		sed 's/&past//g'|
-		sed 's/&cond//g'|
-		sed 's/&pass//g' | 
-		sed 's/&quot//g' |
-		sed 's/&caus//g' | 
-		sed 's/NA//g' |
-		sed 's/\^//g' | 
-		sed "s/\'//g" |
-		sed 's/)//g' |
-		sed 's/(//g' |
-		sed 's/&//g' | 
-		sed '/^ $/d'  |
-		sed '/^$/d' |
-		sed 's/।//g' |
-		sed '/^[ ]*$/d'  |
-		sed 's/^ //g'  |
-		sed 's/^  //g' |		
-		sed 's/^ //g'  |
-		sed 's/^\s//g'  |		
-		sed 's/?//g' |
-		sed 's/�//g' |
-		sed 's/\n//g' |
-		sed 's/^//g' |
-		sed 's/«a/a/g' |
-		sed 's/å/a/g' |
-		sed 's/\.//g' |
- 		sed 's/\,//g' |
- 		sed 's/̌//g' |
- 		sed 's/‡//g' |
- 		sed 's/§//g' |
- 		sed 's/̟//g' |
-		sed 's/?//g' |
-		sed 's/^//g' |
-		sed 's/=//g' |
-		sed 's/-//g' |
-		sed 's/™//g' |
-		#sed 's/'//g' |
-		sed 's/ü//g' |
-		sed 's/  / /g' |
-		sed 's/…//g' |
-		sed 's/\!//g' |
-		sed 's/_//g' |
-		#sed 's/\'//g' |		
-		sed 's/://g' |
-		sed 's/a?//g' |
-		sed 's/^\s//g' |
-		sed 's/^\///g'  | #there aren't really any of these, this is just a cautionary measure	
-		sed 's/  / /g'|
-		sed 's/  / /g'|		
-		sed 's/^\s//g' |
-		sed 's/ \//\/ \//g'|
-		sed 's/ $/\/ /g' |
-		#sed 's/^\///g' |
-		sed 's/^[ \t]*//g' |
-		sed 's/^ //g' |
-		sed 's/^\s//g'  |
-               sed 's/^[[:space:]]//g'	|	
-                sed 's/ /;eword/g' |
-		sed 's/\//;esyll/g'|		
-		sed 's/;esyll ;esyll/;esyll/g' |
-		##sed 's/ /;eword/g' |
-		##sed -e 's/\(.\)/\1 /g'  |
-		sed 's/; e w o r d/ ;eword /g' |
-		sed 's/; e s y l l/ ;esyll /g'|
-		##sed 's/\// ;esyll /g'|
-		sed 's/;eword $/;esyll ;eword$/g'|
-		sed 's/  / /g'|
-		sed 's/;eword ;esyll/;esyll ;eword/g'|
-		sed 's/;esyll ;eword ;esyll/;esyll ;eword/g' |
-		tr -s ' '  |
-		sed 's/;esyll ;eword ;esyll/;esyll ;eword/g' |
-		sed 's/^;esyll ;eword//g' | 
-		sed 's/^ ;esyll ;eword//g' |
-		sed 's/^  ;esyll ;eword//g' | 
-		sed 's/^ //g' |		
-		sed 's/^;esyll ;eword//g' > $RES_FOLDER/tmp.tmp
+		sed '/^$/d' $RESULT_FOLDER/${COVERAGE}_outofperl.tmp |
+		sed 's/^[ ]*//g'  | # delete sentence-initial blanks
+		sed 's/[ ]*$//g' | # delete sentence-final blanks
+#		sed 's/।//g' | # georgia please correct this line and all of the following
+#		sed 's/�//g' |
+#		sed 's/«a/a/g' |
+#		sed 's/å/a/g' |
+# 		sed 's/‡//g' |
+# 		sed 's/§//g' |
+#		sed 's/™//g' |
+#		sed 's/ü//g' |
+#		sed 's/a?//g' |
+		sed '/^[ ]*$/d' > $RESULT_FOLDER/tmp.tmp # delete blank lines
+			 
 	
-		mv $RES_FOLDER/tmp.tmp ${RES_FOLDER}/clean_corpus-tags.txt
-
-	echo "creating gold versions"
-
-		sed -e 's/;esyll//g' -e 's/?//g' < ${RES_FOLDER}/${KEYNAME}-tags.txt |
-		tr -d ' ' |
-		sed -e's/;eword/ /g'  -e 's/?//g' > ${RES_FOLDER}/${KEYNAME}-gold.txt
+		mv $RESULT_FOLDER/tmp.tmp ${RESULT_FOLDER}/${COVERAGE}-tags.txt
 
 
 done
@@ -318,9 +205,3 @@ done
 
 echo "end"
 
-##pcregrep --color='auto' -n '[^\x00-\x7F]' $PROCESSED_FILE2
-sed -i 's/^ //g' ${RES_FOLDER}/${KEYNAME}-gold.txt
-sed -i 's/^;esyll;esyll;eword;esyl//g' ${RES_FOLDER}/${KEYNAME}-tags.txt
-sed -i 's/^;esyll;esyll;eword;//g' ${RES_FOLDER}/${KEYNAME}-tags.txt
-sed -i 's/^$//g' ${RES_FOLDER}/${KEYNAME}-gold.txt
-sed -i 's/^;esyll;esyll;eword//g' ${RES_FOLDER}/${KEYNAME}-tags.txt

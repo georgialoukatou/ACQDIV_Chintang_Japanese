@@ -23,47 +23,24 @@ echo NSLOTS=$NSLOTS
 
 ######################## Get info from upstream
 #file/folder information
-INPUT_FILE=$1
-SCRIPT_FOLDER=$2
-ROOT=$3
-N_PARTS=$4
-LANGUAGE=$5
-LEVEL=$6
+SCRIPT_FOLDER=$1
+RESULT_FOLDER=$2
+N_PARTS=$3
+SELECTION=$4
 #######################
 
-#derive local vars
-RESULT_FOLDER="$ROOT/$LANGUAGE/$LEVEL" 
-
-#create a result folder, with language and level subfolders
-mkdir -p $RESULT_FOLDER
- 
-# extract input from rda file, without children utterances, clean and save both versions of the file (the full one, and the one without foreign words)
-Rscript $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $RESULT_FOLDER $LANGUAGE $LEVEL
-
-# cut the ensuing file into 10 subparts
-for PREPOSITION in noforeign full ; do
-	bash $SCRIPT_FOLDER/phonologize_newtags.sh $LANGUAGE $SCRIPT_FOLDER $RESULT_FOLDER/${PREPOSITION}.txt
-
-	bash $SCRIPT_FOLDER/cut.sh $RESULT_FOLDER/${PREPOSITION}-tags.txt $RESULT_FOLDER/split/ $N_PARTS
-done
-
+if [ "$N_PARTS" -gt 1 ]
+   PATTERN="$RESULT_FOLDER/$SELECTION/*/tags.txt"
+else
+   PATTERN="$RESULT_FOLDER/$SELECTION/tags.txt"
+fi
 
 # analyze each of the subparts 
-for VERSION in $RESULT_FOLDER/concatenate/*/${PREPOSITION}_${LANGUAGE}_${LEVEL}.txt
+for THISTAG in $PATTERN
 do
 	THISGOLD="$VERSION/clean_corpus-gold.txt"
 	THISTAG="${THISGOLD/gold/tags}"
 
-
-######## STOPPED HERE!! I realized I'm not doing this right because I didn't get the organization
-
-	LANG=C
-	LC_CTYPE=C
-
-	#Precautionary measures
-	pcregrep --color='auto' -n '[^\x00-\x7F]' $VERSION/clean_corpus-gold.txt
-	#sed -i -e 's/[^\x00-\x7F]//g' -e 's/^\s//g' -e 's/^;esyll ;eword //g'  $VERSION/clean_corpus-gold.txt #no need to use, only precautionary
-	#sed -i -e 's/[^\x00-\x7F]//g' -e 's/^\s//g' -e 's/^;esyll ;eword //g'  $VERSION/clean_corpus-tags.txt #no need to use, only precautionary
 
 		
 
