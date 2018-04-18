@@ -9,7 +9,7 @@
 #INPUT_FILE="/Users/acristia/Documents/acqdiv/acqdiv_corpus_2017-09-28_CRJ.rda" #where the database is
 SCRIPT_FOLDER="/scratch1/users/acristia/acqdiv/ACQDIV_Chintang_Japanese" #where the scripts are
 ROOT="/scratch1/users/acristia/acqdiv/" #where you want results to be saved
-N_PARTS=10 # number of subcorpora to use to be able to draw confidence intervals -- write in 1 if you want to analyze the full corpus (or if you're not rerunning the cleaning, phonologization and parsing,
+N_PARTS=1 # number of subcorpora to use to be able to draw confidence intervals -- write in 1 if you want to analyze the full corpus (or if you're not rerunning the cleaning, phonologization and parsing,
 SELECTION="full" # by default, this script analyzes the full database; you can also rerun it with the option "noforeign", in which case we recommend the N_PARTS to be 1
 ####################### USER, ALL DONE!
 
@@ -17,38 +17,37 @@ SELECTION="full" # by default, this script analyzes the full database; you can a
 
 # extract all ortho versions from rda file, without children utterances, clean and save both versions of the file (the full one, and the one without foreign words), inside the root folder 
 # NOTE !!! Rscript not working on oberon
-# RScript $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $ROOT
+#RScript $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $ROOT
 
 # phonologize ALL the files in the root folder
 #bash $SCRIPT_FOLDER/phonologize.sh $SCRIPT_FOLDER $ROOT
 
 # cut the ensuing files into 10 subparts
 if [ "$N_PARTS" -gt 1 ] ; then
-#$ROOT/*/*/*-tags.txt
-    for FILE in $ROOT/Chintang/morphemes/*-tags.txt ; do
+    for FILE in $ROOT/*/*/*-tags.txt ; do
     	bash $SCRIPT_FOLDER/cut.sh $FILE $N_PARTS
     done
 fi
 
 
 #------------ corpus analysis stage ------------#
-#module load python-anaconda
-#source activate wordseg
+module load python-anaconda
+source activate /cm/shared/apps/python-anaconda/envs/wordseg
 
-#for LANGUAGE in Chintang Japanese ; do
-#    for LEVEL in morphemes words ; do
+for LANGUAGE in Chintang  ; do
+    for LEVEL in morphemes ; do
 
 		#derive local vars
-#		RESULT_FOLDER="$ROOT/$LANGUAGE/$LEVEL" 
+		RESULT_FOLDER="$ROOT/$LANGUAGE/$LEVEL" 
 
-		#create a result folder, with language and level subfolders
-#		mkdir -p $RESULT_FOLDER
+		./analyze.sh $SCRIPT_FOLDER $RESULT_FOLDER $N_PARTS $SELECTION
 
-#		./analyze.sh $SCRIPT_FOLDER $RESULT_FOLDER $N_PARTS $SELECTION
-#    done
-#done
+		# bash $SCRIPT_FOLDER/collapse_results.sh $LANGUAGE $LEVEL $ROOT
+    done
+done
 
-#source deactivate
+source deactivate
+
 
 #CHECK
 #bash $SCRIPT_FOLDER/collapse_results.sh $LANGUAGE $LEVEL $ROOT

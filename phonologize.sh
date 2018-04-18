@@ -184,21 +184,31 @@ echo processing $ORTHO into $RESULT_FOLDER
 		echo "removing blank lines"
 		LANG=C LC_CTYPE=C LC_ALL=C
 		cat $RESULT_FOLDER/${COVERAGE}_outofperl.tmp | 
-		sed 's/ / ;word /g' | #replace word boundaries with our word tag
-		sed 's/^\///g' | #remove sentence-initial syll boundaries
-		sed 's/\// ;esyll /g' | #replace syll boundaries with our syll tag
-		sed 's/^[ ]*//g'  | # delete sentence-initial blanks
-		sed 's/[ ]*$//g' | # delete sentence-final blanks
-		sed '/^$/d' | # delete empty lines
-#		sed 's/।//g' | # georgia please correct this line and all of the following
-#		sed 's/�//g' |
-#		sed 's/«a/a/g' |
-#		sed 's/å/a/g' |
-# 		sed 's/‡//g' |
-# 		sed 's/§//g' |
-#		sed 's/™//g' |
-#		sed 's/ü//g' |
-#		sed 's/a?//g' |
+                sed 's/^[ ]*//g'  | # delete sentence-initial blanks
+                sed 's/[ ]*$//g' | # delete sentence-final blanks
+                tr -s " " | #single spaces
+                tr " " ":" | #replace spaces with intermediate symbol for word boundary
+                sed 's/$/:/g' | #make sure each sentence ends with a word boundary ...
+                tr -s ":" | #... but only one of them
+                sed 's/\(.\)/\1 /g' | #insert spaces between every two letters
+                tr -s " " | #single spaces
+                sed 's/:/ ;eword /g' | #replace word boundaries with our word tag
+                sed 's/ ;eword[ ]*$/ ;eword \//g' | #add syllable break final word break
+                sed 's/^\///g' | #remove sentence-initial syll boundaries
+                sed 's/\// ;esyll /g' | #replace syll boundaries with our syll tag
+                sed 's/;eword[ ]*;esyll/;esyll ;eword/g' | #invert syll and word boundaries
+                tr -s " " | #single spaces
+                sed 's/^[ ]*//g'  | # delete sentence-initial blanks
+                sed 's/[ ]*$//g' | # delete sentence-final blanks
+                sed '/^$/d' | # delete empty lines
+               sed 's/।//g' | # georgia please try to mover this line and all of the following to cleaning
+               sed 's/«a/a/g' |
+               sed 's/å/a/g' |
+               sed 's/‡//g' |
+               sed 's/§//g' |
+               sed 's/™//g' |
+               sed 's/ü//g' |
+               sed 's/a?//g' |
 		sed '/^[ ]*$/d' > $RESULT_FOLDER/tmp.tmp # delete blank lines
 			 
 	
