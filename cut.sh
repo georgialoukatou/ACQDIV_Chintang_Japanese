@@ -25,7 +25,7 @@ do
   ini=$(( $i * $n + 1 ))
   fin=$(( $ini + $n - 1 ))
 
-  echo sed -n ${ini},${fin}p $input_file > ${output_folder}/${i}/tags.txt
+  sed -n ${ini},${fin}p $input_file > ${output_folder}/${i}/tags.txt
   i=$(($i + 1 ))
 done
 

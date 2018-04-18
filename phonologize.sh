@@ -184,12 +184,12 @@ echo processing $ORTHO into $RESULT_FOLDER
 		echo "removing blank lines"
 		LANG=C LC_CTYPE=C LC_ALL=C
 		cat $RESULT_FOLDER/${COVERAGE}_outofperl.tmp | 
-		sed 's/\// ;esyll /g' | #replace syll boundaries with our syll tag
 		sed 's/ / ;word /g' | #replace word boundaries with our word tag
-
-		sed '/^$/d' $RESULT_FOLDER/${COVERAGE}_outofperl.tmp |
+		sed 's/^\///g' | #remove sentence-initial syll boundaries
+		sed 's/\// ;esyll /g' | #replace syll boundaries with our syll tag
 		sed 's/^[ ]*//g'  | # delete sentence-initial blanks
 		sed 's/[ ]*$//g' | # delete sentence-final blanks
+		sed '/^$/d' | # delete empty lines
 #		sed 's/।//g' | # georgia please correct this line and all of the following
 #		sed 's/�//g' |
 #		sed 's/«a/a/g' |

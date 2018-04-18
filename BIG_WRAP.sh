@@ -20,15 +20,15 @@ SELECTION="full" # by default, this script analyzes the full database; you can a
 # RScript $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $ROOT
 
 # phonologize ALL the files in the root folder
-# FIX: output isn't right
-bash $SCRIPT_FOLDER/phonologize.sh $SCRIPT_FOLDER $ROOT
+#bash $SCRIPT_FOLDER/phonologize.sh $SCRIPT_FOLDER $ROOT
 
 # cut the ensuing files into 10 subparts
-#if [ "$N_PARTS" -gt 1 ]
-#    for FILE in $ROOT/*/*/*-tags.txt ; do
-#    	bash $SCRIPT_FOLDER/cut.sh $FILE $N_PARTS
-#    done
-#fi
+if [ "$N_PARTS" -gt 1 ] ; then
+#$ROOT/*/*/*-tags.txt
+    for FILE in $ROOT/Chintang/morphemes/*-tags.txt ; do
+    	bash $SCRIPT_FOLDER/cut.sh $FILE $N_PARTS
+    done
+fi
 
 
 #------------ corpus analysis stage ------------#
