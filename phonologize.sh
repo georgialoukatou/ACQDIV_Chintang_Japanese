@@ -94,21 +94,20 @@ echo processing $ORTHO into $RESULT_FOLDER
 	tr '[:upper:]' '[:lower:]'  < "$ORTHO"  |
 		sed 's/jh/9/g' |#phoneme
 		sed 's/̟c/c/g' |
-		#sed 's/self /g' |
-		#sed 's/ self/g'	|
-		#sed 's/self/g' |
+                sed 's/̟ ̟//g' | # remove raising marker
+		sed 's/ŋ ̟t/Ht/g' | # idem
+		sed 's/a ̟k/ak/g' | # idem
 		sed 's/ɨ̵ŋ/1H/g' |
 		sed 's/ǃ//g'  |
 		sed 's/ɨ/1/g' | #valid vowel phoneme
-		sed 's/̌à/a/g' |#no phonemic distinction
-		sed 's/u̪/u/g'|#no phonemic distinction
+		sed 's/[üuu̪u̪]/u/g'|#no phonemic distinction
 		sed 's/eĩ/E/g' | #nasalized diphtongs actual phonemes
 		sed 's/aĩ/A/g' | #nasalized diphtongs actual phonemes	
 		sed 's/oĩ/O/g' | #nasalized diphtongs actual phonemes
 		sed 's/uĩ/U/g' | #nasalized diphtongs actual phonemes
 		sed 's/aũ/0/g' | #nasalized diphtongs actual phonemes
 		sed 's/iĩ/I/g' | #nasalized diphtongs actual phonemes
-		sed 's/[àãâāåà]/a/g' | #no length or other  distinctions for phonemes
+		sed 's/[ãààãâāåaaååå̀]/a/g' | #no length or other  distinctions for phonemes
 		sed 's/ei/2/g' | #diphtongs actual phonemes
 		sed 's/ai/3/g' | #diphtongs actual phonemes
 		sed 's/oi/4/g' | #diphtongs actual phonemes
@@ -117,7 +116,6 @@ echo processing $ORTHO into $RESULT_FOLDER
 		sed 's/1i/7/g' | #diphtongs actual phonemes
 		sed 's/ñ/n/g' | #no phonemic distinction
 		sed 's/[ā]/a/g' |#no phonemic distinction
-		sed 's/[ũùûùü]/u/g' |#no phonemic distinction
 		sed 's/[ôò]/o/g' |#no phonemic distinction
 		sed 's/[èẽë]/e/g' |#no phonemic distinction
 		sed 's/[ĩīĩ]/i/g' |#no phonemic distinction
@@ -151,6 +149,7 @@ echo processing $ORTHO into $RESULT_FOLDER
 		sed 's/ɲ/n/g' |#no phonemic distinction
 		sed 's/hAA̴/ha/g' |
 		sed 's/ptn/pn/g' | # second consonant dropped if cluster of three, ptn
+		sed 's/ɡ/g/g' |# GEORGIA PLEASE CHECK -- OCCURS ONLY ONCE
 		sed 's/¨//g'  |# georgia please document this line and the following -- if this is cleaning of illegal chars, it should happen in the R file
 		sed 's/Œ ñ//g' |
 		sed 's/Œ £//g' |
@@ -164,13 +163,13 @@ echo processing $ORTHO into $RESULT_FOLDER
 		sed 's/̴̴//g'  |
 		sed 's/̴//g'  |
 		sed 's/±//g'  |
-		sed 's/lUɡE//g' |  # georgia please document this line and all of the following, as they seem arbitrary
-		sed 's/IɡIMA//g' |
-		sed 's/iɡiMa//g' |
+		sed 's/lUɡE/lUgE/g' |  # georgia not sure why these were deleted previously
+		sed 's/IɡIMA/IgIMA/g' |
+		sed 's/iɡiMa/igiMa/g' |
 		sed 's/hu̪i/hui/g' |
 		sed 's/hãǃ/ha/g' |
 		sed 's/ɨ̵ŋ/1H/g' |
-		sed 's/luɡe//g' |
+		sed 's/luɡe/luge/g' |
 		sed 's/ph/F/g' > $RESULT_FOLDER/${COVERAGE}_intoperl.tmp
 
 

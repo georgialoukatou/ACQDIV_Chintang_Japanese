@@ -40,9 +40,9 @@ for LANGUAGE in Chintang  ; do
 		#derive local vars
 		RESULT_FOLDER="$ROOT/$LANGUAGE/$LEVEL" 
 
-		./analyze.sh $SCRIPT_FOLDER $RESULT_FOLDER $N_PARTS $SELECTION
+#		bash $SCRIPT_FOLDER/analyze.sh $SCRIPT_FOLDER $RESULT_FOLDER $N_PARTS $SELECTION
 
-		# bash $SCRIPT_FOLDER/collapse_results.sh $LANGUAGE $LEVEL $ROOT
+		bash $SCRIPT_FOLDER/collapse_results.sh $RESULT_FOLDER/$SELECTION
     done
 done
 
