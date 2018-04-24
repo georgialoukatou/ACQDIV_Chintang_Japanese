@@ -73,17 +73,14 @@ echo processing $ORTHO into $RESULT_FOLDER
 	  sed 's/a:/A/g' | #long a
 	  sed 's/i:/I/g' | #long i
 	  sed 's/ei/E/g' | #ei is long e
-	  sed 's/^\s//g' |
 	  sed 's/si/Ji/g'| # no si
 	  sed 's/ti/tJi/g' |
 	  sed 's/tu/tsu/g' | #no tu, ti 
-	  sed 's/wi/i/g' |
-	  sed 's/wu/u/g' | #(w)i, (w)e, (w)o, (w)u
+	  sed 's/wi/i/g' | #(w)i, (w)e, (w)o, (w)u
+	  sed 's/wu/u/g' | 
 	  sed 's/we/e/g' |
 	  sed 's/wo/o/g' |
-	  sed 's/nja/La/g' |
-	  sed 's/-/ /g' | 
-	  tr -s "\'" ' '|
+	  sed 's/nja/La/g' | #Georgia please explain this one
 	  sed 's/ə/e/g' > $RESULT_FOLDER/${COVERAGE}_intoperl.tmp
 
 
@@ -93,84 +90,61 @@ echo processing $ORTHO into $RESULT_FOLDER
 		echo "recognized $LANGUAGE"
 	tr '[:upper:]' '[:lower:]'  < "$ORTHO"  |
 		sed 's/jh/9/g' |#phoneme
-		sed 's/̟c/c/g' |
-                sed 's/̟ ̟//g' | # remove raising marker
-		sed 's/ŋ ̟t/Ht/g' | # idem
+		sed 's/̟c/c/g' |#no phonemic distinction+diacritic issue
+ 		sed 's/ŋ ̟t/Ht/g' | # idem
 		sed 's/a ̟k/ak/g' | # idem
-		sed 's/ɨ̵ŋ/1H/g' |
-		sed 's/ǃ//g'  |
-		sed 's/ɨ/1/g' | #valid vowel phoneme
-		sed 's/[üuu̪u̪]/u/g'|#no phonemic distinction
 		sed 's/eĩ/E/g' | #nasalized diphtongs actual phonemes
 		sed 's/aĩ/A/g' | #nasalized diphtongs actual phonemes	
 		sed 's/oĩ/O/g' | #nasalized diphtongs actual phonemes
 		sed 's/uĩ/U/g' | #nasalized diphtongs actual phonemes
 		sed 's/aũ/0/g' | #nasalized diphtongs actual phonemes
 		sed 's/iĩ/I/g' | #nasalized diphtongs actual phonemes
-		sed 's/[ãààãâāåaaååå̀]/a/g' | #no length or other  distinctions for phonemes
 		sed 's/ei/2/g' | #diphtongs actual phonemes
 		sed 's/ai/3/g' | #diphtongs actual phonemes
 		sed 's/oi/4/g' | #diphtongs actual phonemes
 		sed 's/ui/5/g' | #diphtongs actual phonemes
 		sed 's/au/6/g' | #diphtongs actual phonemes
 		sed 's/1i/7/g' | #diphtongs actual phonemes
-		sed 's/ñ/n/g' | #no phonemic distinction
-		sed 's/[ā]/a/g' |#no phonemic distinction
+		sed 's/[ãààãâāåaaååå̀ã]/a/g' | #no length or other  distinctions for phonemes
 		sed 's/[ôò]/o/g' |#no phonemic distinction
-		sed 's/[èẽë]/e/g' |#no phonemic distinction
+		sed 's/[èẽëË]/e/g' |#no phonemic distinction
+		sed 's/ɨ/1/g' | #valid vowel phoneme
 		sed 's/[ĩīĩ]/i/g' |#no phonemic distinction
+		sed 's/[u̪uüuu̪u̪]/u/g' |#no phonemic distinction
 		sed 's/kk/K/g' |#gemination
 		sed 's/tt/T/g' |#gemination	
 		sed 's/cc/C/g' |#gemination
 		sed 's/bb/B/g' |#gemination
 		sed 's/ss/S/g' |#gemination
 		sed 's/nn/N/g' |#gemination
-		sed 's/ñ/n/g' |#no phonemic distinction
+		sed 's/[ñɲ]/n/g' |#no phonemic distinction
+		sed 's/ŋ/H/g' |#phoneme
+		sed 's/[m̄m]/m/g' |#no phonemic distinction
 		sed 's/mm/M/g' |#gemination
 		sed 's/jj/J/g' |#gemination
 		sed 's/lh/L/g' |#phoneme
 		sed 's/gh/G/g' |#phoneme
 		sed 's/pp/P/g' |#gemination
 		sed 's/dh/D/g' |#phoneme
-		sed 's/ḍ/d/g' |#no phonemic distinction
+		sed 's/[ḍd]/d/g' |#no phonemic distinction
 		sed 's/ch/Y/g' |#phoneme
 		sed 's/jh/Ζ/g' |#phoneme
 		sed 's/bh/V/g' | #phoneme
 		sed 's/kh/Q/g' |#phoneme
 		sed 's/th/X/g' |#phoneme
+		sed 's/ph/F/g |
 		sed 's/ʔ/q/g' |#phoneme
-		sed 's/ṽ/v/g' |#no phonemic distinction
-		sed 's/ŋ/H/g' |#phoneme
-		sed 's/�//g' |
-		sed 's/m̄/m/g' |#no phonemic distinction
-		sed 's//e/g' |
-		sed 's/Ḧ//g' |
-		sed 's/Ë/e/g' |
-		sed 's/ɲ/n/g' |#no phonemic distinction
-		sed 's/hAA̴/ha/g' |
+		sed 's/[ṽv]/v/g' |#no phonemic distinction
 		sed 's/ptn/pn/g' | # second consonant dropped if cluster of three, ptn
-		sed 's/ɡ/g/g' |# GEORGIA PLEASE CHECK -- OCCURS ONLY ONCE
-		sed 's/¨//g'  |# georgia please document this line and the following -- if this is cleaning of illegal chars, it should happen in the R file
-		sed 's/Œ ñ//g' |
-		sed 's/Œ £//g' |
-		sed 's/‡ • §//g' |
-		sed 's/̵//g'  |
+		sed 's/[ɡg]/g/g' |# no phonemic distinction
+		sed 's/̵//g'  |# these are necessary in case these diacritics escaped rules above; they cannot be done in the cleaning stage because they might distinguish sounds
 		sed 's/̪//g'  |
 		sed 's/~//g'  |
-		sed 's/ʌ//g'  |
+               sed 's/̟ ̟//g' | 
+		sed 's/¨//g'  |
 		sed 's/˜//g'  |
-		sed 's/।//g'  |
 		sed 's/̴̴//g'  |
-		sed 's/̴//g'  |
-		sed 's/±//g'  |
-		sed 's/lUɡE/lUgE/g' |  # georgia not sure why these were deleted previously
-		sed 's/IɡIMA/IgIMA/g' |
-		sed 's/iɡiMa/igiMa/g' |
-		sed 's/hu̪i/hui/g' |
-		sed 's/hãǃ/ha/g' |
-		sed 's/ɨ̵ŋ/1H/g' |
-		sed 's/luɡe/luge/g' |
-		sed 's/ph/F/g' > $RESULT_FOLDER/${COVERAGE}_intoperl.tmp
+		sed 's/̴//g'   > $RESULT_FOLDER/${COVERAGE}_intoperl.tmp
 
 
 	fi
@@ -200,14 +174,6 @@ echo processing $ORTHO into $RESULT_FOLDER
                 sed 's/^[ ]*//g'  | # delete sentence-initial blanks
                 sed 's/[ ]*$//g' | # delete sentence-final blanks
                 sed '/^$/d' | # delete empty lines
-               sed 's/।//g' | # georgia please try to mover this line and all of the following to cleaning
-               sed 's/«a/a/g' |
-               sed 's/å/a/g' |
-               sed 's/‡//g' |
-               sed 's/§//g' |
-               sed 's/™//g' |
-               sed 's/ü//g' |
-               sed 's/a?//g' |
 		sed '/^[ ]*$/d' > $RESULT_FOLDER/tmp.tmp # delete blank lines
 			 
 	
