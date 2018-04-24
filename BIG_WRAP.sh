@@ -17,43 +17,36 @@ N_PARTS=10 # number of subcorpora to use to be able to draw confidence intervals
 
 # extract all ortho versions from rda file, without children utterances, clean and save both versions of the file (the full one, and the one without foreign words), inside the root folder 
 # NOTE !!! Rscript not working on oberon
-#RScript $SCRIPT_FOLDER/sel_clean.r $INPUT_FILE $ROOT
+#RScript $SCRIPT_FOLDER/1_sel_clean.r $INPUT_FILE $ROOT
 
 # phonologize ALL the files in the root folder
-# bash $SCRIPT_FOLDER/phonologize.sh $SCRIPT_FOLDER $ROOT
+# bash $SCRIPT_FOLDER/2_phonologize.sh $SCRIPT_FOLDER $ROOT
 
 # cut the ensuing files into N_PARTS subparts
 if [ "$N_PARTS" -gt 1 ] ; then
     for FILE in $ROOT/*/*/*-tags.txt ; do
-    	bash $SCRIPT_FOLDER/cut.sh $FILE $N_PARTS
+    	bash $SCRIPT_FOLDER/3_cut.sh $FILE $N_PARTS
     done
 fi
 
 
 #------------ corpus analysis stage ------------#
-module load python-anaconda
-source activate /cm/shared/apps/python-anaconda/envs/wordseg
 
-for LANGUAGE in Chintang  ; do
-    for LEVEL in morphemes ; do
+
+for LANGUAGE in Chintang Japanese ; do
+    for LEVEL in morphemes words ; do
 
 		#derive local vars
 		RESULT_FOLDER="$ROOT/$LANGUAGE/$LEVEL" 
+		bash  $SCRIPT_FOLDER/4_analyze.sh $SCRIPT_FOLDER $RESULT_FOLDER $N_PARTS $SELECTION 
 
-#		bash $SCRIPT_FOLDER/analyze.sh $SCRIPT_FOLDER $RESULT_FOLDER $N_PARTS $SELECTION
-
-#		bash $SCRIPT_FOLDER/collapse_results.sh $RESULT_FOLDER/$SELECTION
     done
 done
 
-source deactivate
+while [[ `qstat  | grep "acqdiv" | wc -l` -gt 0 ]] ; do
+    sleep 1
+done
 
+bash $SCRIPT_FOLDER/5_collapse_results.sh $ROOT
 
-#CHECK
-#bash $SCRIPT_FOLDER/collapse_results.sh $LANGUAGE $LEVEL $ROOT
-#cat $ROOT/merged*.csv >> $ROOT/merged_Chintang_Japanese.csv
-#sed -i -e 's/utterance_morphemes/morphemes/g' -e 's/utterance/words/g'  $ROOT/regression_Chintang_Japanese.csv
-#sed -i 1i"language,algorithm,level,fscore,subalgorithm,subcorpora" $ROOT/merged_Chintang_Japanese.csv
-
-#Rscript $SCRIPT_FOLDER/regression.r $ROOT/regression_Chintang_Japanese.csv $ROOT/plot.jpg > $ROOT/regression.txt
 

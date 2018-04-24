@@ -29,6 +29,10 @@ N_PARTS=$3
 SELECTION=$4
 #######################
 
+
+module load python-anaconda boost     
+source activate /cm/shared/apps/python-anaconda/envs/wordseg
+
 if [ "$N_PARTS" -gt 1 ] ; then
    PATTERN="$RESULT_FOLDER/${SELECTION}_part*/tags.txt"
 else
@@ -38,8 +42,7 @@ fi
 # analyze each of the subparts 
 for THISTAG in $PATTERN
 do
-  	FOLDER=`dirname $THISTAG`
-	mkdir -p $OUT
+  	FOLDER=`dirname $THISTAG | sed 's/.*Chintang/C/g' | sed 's/.*Japanese/J/g'| sed 's/morphemes/_m/g' | sed 's/words/_w/g' | tr -d "/"`
 	PREP_SYLL="${THISTAG/tags/prepared_s}"
 	PREP_PHONE="${THISTAG/tags/prepared_p}"
 	THISGOLD="${THISTAG/tags/gold}"
@@ -69,8 +72,9 @@ echo $THISGOLD $out
 	wordseg-dibs -t phrasal -o ${THISTAG}_segmented.dibs.txt $PREP_PHONE  $THISTAG
 	wordseg-eval -o ${THISTAG}_eval.dibs.txt ${THISTAG}_segmented.dibs.txt $THISGOLD
 
-#	wordseg-ag $PREP_PHONE $SCRIPT_FOLDER/Colloc0_acqdiv.lt Colloc0 -n 2000 -vv > ${THISTAG}_segmented.ag.txt
-#	cat ${THISTAG}_segmented.ag.txt | wordseg-eval $THISGOLD > ${THISTAG}_eval.ag.txt
+        echo "module load python-anaconda boost && \
+          source activate /cm/shared/apps/python-anaconda/envs/wordseg && \
+          cat $PREP_PHONE | wordseg-ag $SCRIPT_FOLDER/Colloc0_acqdiv.lt Colloc0 --njobs 8 | tee ${THISTAG}_segmented.ag.txt | wordseg-eval $THISGOLD  > ${THISTAG}_eval.ag.txt || exit 1"   | qsub -S /bin/bash -V -cwd -j y -pe mpich 8 -N acqdiv_$FOLDER 
 
 	#baselines
 	cat $PREP_SYLL | wordseg-baseline -P 1 > ${THISTAG}_segmented.baselinesyll1.txt
@@ -86,5 +90,4 @@ echo $THISGOLD $out
 
 done
 
-
-
+source deactivate
