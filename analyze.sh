@@ -30,7 +30,7 @@ SELECTION=$4
 #######################
 
 if [ "$N_PARTS" -gt 1 ] ; then
-   PATTERN="$RESULT_FOLDER/$SELECTION/*/tags.txt"
+   PATTERN="$RESULT_FOLDER/${SELECTION}_part*/tags.txt"
 else
    PATTERN="$RESULT_FOLDER/${SELECTION}-tags.txt"
 fi
@@ -39,8 +39,9 @@ fi
 for THISTAG in $PATTERN
 do
   	FOLDER=`dirname $THISTAG`
-	OUT="$FOLDER/$SELECTION/results"
 	mkdir -p $OUT
+	PREP_SYLL="${THISTAG/tags/prepared_s}"
+	PREP_PHONE="${THISTAG/tags/prepared_p}"
 	THISGOLD="${THISTAG/tags/gold}"
 	THISSTAT="${THISTAG/tags/stats}"
 
@@ -50,36 +51,36 @@ echo $THISGOLD $out
 	wordseg-stats $THISTAG -o $THISSTAT
 
 
-	cat $THISTAG | wordseg-prep -u syllable --gold $THISGOLD > $OUT/prepared_syll.txt
-	cat $THISTAG | wordseg-prep -u phone > $OUT/prepared.txt
+	cat $THISTAG | wordseg-prep -u syllable --gold $THISGOLD > $PREP_SYLL
+	cat $THISTAG | wordseg-prep -u phone > $PREP_PHONE
 
-	cat $OUT/prepared_syll.txt | wordseg-tp -t relative -p forward > $OUT/segmented.ftp_rel.txt
-	cat $OUT/segmented.ftp_rel.txt | wordseg-eval $THISGOLD > $OUT/eval.ftp_rel.txt
+	cat $PREP_SYLL | wordseg-tp -t relative -p forward > ${THISTAG}_segmented.ftp_rel.txt
+	cat ${THISTAG}_segmented.ftp_rel.txt | wordseg-eval $THISGOLD > ${THISTAG}_eval.ftp_rel.txt
 
-	cat $OUT/prepared_syll.txt | wordseg-tp -t absolute -p forward > $OUT/segmented.ftp_abs.txt
-	cat $OUT/segmented.ftp_abs.txt | wordseg-eval $THISGOLD > $OUT/eval.ftp_abs.txt
+	cat $PREP_SYLL | wordseg-tp -t absolute -p forward > ${THISTAG}_segmented.ftp_abs.txt
+	cat ${THISTAG}_segmented.ftp_abs.txt | wordseg-eval $THISGOLD > ${THISTAG}_eval.ftp_abs.txt
 
-	cat $OUT/prepared_syll.txt | wordseg-tp -t relative -p backward > $OUT/segmented.btp_rel.txt
-	cat $OUT/segmented.btp_rel.txt | wordseg-eval $THISGOLD > $OUT/eval.btp_rel.txt
+	cat $PREP_SYLL | wordseg-tp -t relative -p backward > ${THISTAG}_segmented.btp_rel.txt
+	cat ${THISTAG}_segmented.btp_rel.txt | wordseg-eval $THISGOLD > ${THISTAG}_eval.btp_rel.txt
 
-	cat $OUT/prepared_syll.txt | wordseg-tp -t absolute -p backward > $OUT/segmented.btp_abs.txt
-	cat $OUT/segmented.btp_abs.txt | wordseg-eval $THISGOLD > $OUT/eval.btp_abs.txt
+	cat $PREP_SYLL | wordseg-tp -t absolute -p backward > ${THISTAG}_segmented.btp_abs.txt
+	cat ${THISTAG}_segmented.btp_abs.txt | wordseg-eval $THISGOLD > ${THISTAG}_eval.btp_abs.txt
 
-	wordseg-dibs -t phrasal -o $OUT/segmented.dibs.txt $OUT/prepared.txt  $THISTAG
-	wordseg-eval -o $OUT/eval.dibs.txt $OUT/segmented.dibs.txt $THISGOLD
+	wordseg-dibs -t phrasal -o ${THISTAG}_segmented.dibs.txt $PREP_PHONE  $THISTAG
+	wordseg-eval -o ${THISTAG}_eval.dibs.txt ${THISTAG}_segmented.dibs.txt $THISGOLD
 
-#	wordseg-ag $OUT/prepared.txt $SCRIPT_FOLDER/Colloc0_acqdiv.lt Colloc0 -n 2000 -vv > $OUT/segmented.ag.txt
-#	cat $OUT/segmented.ag.txt | wordseg-eval $THISGOLD > $OUT/eval.ag.txt
+#	wordseg-ag $PREP_PHONE $SCRIPT_FOLDER/Colloc0_acqdiv.lt Colloc0 -n 2000 -vv > ${THISTAG}_segmented.ag.txt
+#	cat ${THISTAG}_segmented.ag.txt | wordseg-eval $THISGOLD > ${THISTAG}_eval.ag.txt
 
 	#baselines
-	cat $OUT/prepared_syll.txt | wordseg-baseline -P 1 > $OUT/segmented.baselinesyll1.txt
-	cat $OUT/segmented.baselinesyll1.txt | wordseg-eval $THISGOLD > $OUT/eval.baselinesyll1.txt
+	cat $PREP_SYLL | wordseg-baseline -P 1 > ${THISTAG}_segmented.baselinesyll1.txt
+	cat ${THISTAG}_segmented.baselinesyll1.txt | wordseg-eval $THISGOLD > ${THISTAG}_eval.baselinesyll1.txt
 
-	cat $OUT/prepared_syll.txt | wordseg-baseline -P 0 > $OUT/segmented.baselinesyll0.txt
-	cat $OUT/segmented.baselinesyll0.txt | wordseg-eval $THISGOLD > $OUT/eval.baselinesyll0.txt
+	cat $PREP_SYLL | wordseg-baseline -P 0 > ${THISTAG}_segmented.baselinesyll0.txt
+	cat ${THISTAG}_segmented.baselinesyll0.txt | wordseg-eval $THISGOLD > ${THISTAG}_eval.baselinesyll0.txt
 
-	cat $OUT/prepared_syll.txt | wordseg-baseline -P 0.5 > $OUT/segmented.baselinesyll0.5.txt
-	cat $OUT/segmented.baselinesyll0.5.txt | wordseg-eval $THISGOLD > $OUT/eval.baselinesyll0.5.txt
+	cat $PREP_SYLL | wordseg-baseline -P 0.5 > ${THISTAG}_segmented.baselinesyll0.5.txt
+	cat ${THISTAG}_segmented.baselinesyll0.5.txt | wordseg-eval $THISGOLD > ${THISTAG}_eval.baselinesyll0.5.txt
 
 	echo "done segmentation"
 

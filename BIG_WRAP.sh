@@ -9,8 +9,8 @@
 #INPUT_FILE="/Users/acristia/Documents/acqdiv/acqdiv_corpus_2017-09-28_CRJ.rda" #where the database is
 SCRIPT_FOLDER="/scratch1/users/acristia/acqdiv/ACQDIV_Chintang_Japanese" #where the scripts are
 ROOT="/scratch1/users/acristia/acqdiv/" #where you want results to be saved
-N_PARTS=1 # number of subcorpora to use to be able to draw confidence intervals -- write in 1 if you want to analyze the full corpus (or if you're not rerunning the cleaning, phonologization and parsing,
-SELECTION="full" # by default, this script analyzes the full database; you can also rerun it with the option "noforeign", in which case we recommend the N_PARTS to be 1
+SELECTION="full" # by default, this script analyzes the full database; you can also rerun it with the option "noforeign", in which case we recommend the N_PARTS to be 5
+N_PARTS=1 # number of subcorpora to use to be able to draw confidence intervals
 ####################### USER, ALL DONE!
 
 #------------ corpus preparation stage ------------#
@@ -22,7 +22,7 @@ SELECTION="full" # by default, this script analyzes the full database; you can a
 # phonologize ALL the files in the root folder
 #bash $SCRIPT_FOLDER/phonologize.sh $SCRIPT_FOLDER $ROOT
 
-# cut the ensuing files into 10 subparts
+# cut the ensuing files into N_PARTS subparts
 if [ "$N_PARTS" -gt 1 ] ; then
     for FILE in $ROOT/*/*/*-tags.txt ; do
     	bash $SCRIPT_FOLDER/cut.sh $FILE $N_PARTS
