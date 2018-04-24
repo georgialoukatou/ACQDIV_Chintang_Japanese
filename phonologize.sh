@@ -42,7 +42,7 @@ echo processing $ORTHO into $RESULT_FOLDER
 	  sed 's/nn/N/g' | #double consonants
 	  sed 's/pp/P/g' | #double consonants
 	  sed 's/ʃ/J/g' |
-	  sed 's/ŋ/n/g' |
+	  sed 's/ŋ/n/g' | # GEORGIA PLEASE CHECK -- ISN'T THIS THE MORAIC NASAL, THAT TAKES THE PLACE OF ARTICULATION OF THE NEXT C
 	  sed 's/sy/W/g' | #y after consonant
 	  sed 's/zy/Q/g' | #y after consonant
 	  sed 's/ty/D/g' | #y after consonant
@@ -132,7 +132,7 @@ echo processing $ORTHO into $RESULT_FOLDER
 		sed 's/bh/V/g' | #phoneme
 		sed 's/kh/Q/g' |#phoneme
 		sed 's/th/X/g' |#phoneme
-		sed 's/ph/F/g |
+		sed 's/ph/F/g' |
 		sed 's/ʔ/q/g' |#phoneme
 		sed 's/[ṽv]/v/g' |#no phonemic distinction
 		sed 's/ptn/pn/g' | # second consonant dropped if cluster of three, ptn
@@ -146,11 +146,10 @@ echo processing $ORTHO into $RESULT_FOLDER
 		sed 's/̴̴//g'  |
 		sed 's/̴//g'   > $RESULT_FOLDER/${COVERAGE}_intoperl.tmp
 
-
 	fi
 
 
-		echo "syllabify-corpus.pl"
+		echo "perl $PATH_TO_SCRIPTS/syllabify-corpus.pl $LANGUAGE $RESULT_FOLDER/${COVERAGE}_intoperl.tmp $RESULT_FOLDER/${COVERAGE}_outofperl.tmp $PATH_TO_SCRIPTS"
 		perl $PATH_TO_SCRIPTS/syllabify-corpus.pl $LANGUAGE $RESULT_FOLDER/${COVERAGE}_intoperl.tmp $RESULT_FOLDER/${COVERAGE}_outofperl.tmp $PATH_TO_SCRIPTS
 
 
