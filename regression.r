@@ -1,9 +1,52 @@
 #!/usr/bin/env Rscript
 args<-commandArgs(trailingOnly=TRUE)
+resfile=args[1]
+statfile=args[2]
+folder=args[3]
+#resfile<-"results.txt"
+#statfile="stats.txt"
+#folder="/scratch1/users/acristia/acqdiv/"
 
-data<-read.csv(args[1])
+#COMPILE RESULTS DATA
+data<-read.csv(resfile)
+# colnames(data)<-c("folder" ,
+# "token_precision" ,"token_recall", "token_fscore" ,
+# "type_precision", "type_recall", "type_fscore" ,
+# "boundary_precision", "boundary_recall", "boundary_fscore" ,
+# "boundary_NE_precision" ,"boundary_NE_recall" ,"boundary_NE_fscore")
+for(thiscol in c("boundary_NE_precision" ,"boundary_NE_recall" ,"boundary_NE_fscore")) data[,thiscol]=as.numeric(as.character(data[,thiscol]))
+summary(data)
+data$fscores=data$token_fscore
+#clean up and extract info from files named like /scratch1/users/acristia/acqdiv//Chintang/morphemes/full-tags.txt_eval.ag.txt
+# and like Japanese/words/full_part9/tags.txt_eval.ftp_rel.txt
+data$folder=gsub("//","/",data$folder)
+data$folder=gsub(folder,"",data$folder)
+data$language=gsub("/.*","",data$folder)
+data$level=gsub("/.*","",gsub(".*[ge]/","",data$folder))
+data$subalgorithm=gsub(".txt","",gsub(".*eval.","",data$folder))
+data$file=gsub("tags.txt.*","",data$folder)
+  
+# divergence in notation between full and part
+data$corpus=NA
+data$corpus[grep("_part",data$folder,invert=T)]=gsub("-tags","",gsub("\\..*","",gsub(".*/","",data$folder[grep("_part",data$folder,invert=T)])))
+data$subcorpus=NA
+data$subcorpus[grep("_part",data$folder)]=gsub(".*/","",gsub("/tags.*","",data$folder[grep("_part",data$folder)]))
 
-fit <- lm(fscores ~ language * level * subalgorithm + (1 | subcorpus)), data)
+summary(data)
+
+#COMPILE STATS DATA
+stat<-read.csv(statfile)
+stat$folder=gsub("//","/",stat$folder)
+stat$folder=gsub(folder,"",stat$folder)
+stat$file=gsub("stats.txt.*","",stat$folder)
+
+#combine and save
+merge(data,stat,by="file")->data
+write.table(data,paste0(folder,"/res-stat.txt"),row.names=F,quote=T,sep=",")
+read.csv(paste0(folder,"/res-stat.txt"))->data
+
+
+fit <- lm(fscores ~ language * level * subalgorithm + (1 / file), data)
 summary(fit)
 
 ######## PLOT 
