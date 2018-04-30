@@ -89,6 +89,7 @@ Throughout the analyses, we focused on token F-scores separately for each combin
 pdf(paste0(outfolder,"fig:res.pdf"))
 palette(c("black", "red", "green3", "blue", "orange", "gray", "violet", "brown","green1"))
 newdata <- data
+###baselines added in figure
 newdata$subalgorithm = factor(newdata$subalgorithm, c("AGu", "BTP_abs", "FTP_abs", "BTP_rel", "FTP_rel", "DiBS","base1","base0.5","base0"))
 newdata$xval= ifelse(newdata$level=="words",0,2) + ifelse(newdata$language=="Chintang",1,2) + (as.numeric(newdata$subalgorithm)/10 - mean(as.numeric(newdata$subalgorithm)/10))
 par(mar=c(5.1, 4.1, 4.1, 8.1), xpd=TRUE)
@@ -104,7 +105,51 @@ dev.off()
 Token F-scores across language and representational level. Models are marked by color. Datapoints spread vertically are the results for the ten subsets of each corpus.
 
 ```{r tab:meanscores, echo=FALSE}
-plot
+#mean fscores
+agcw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="AGu"),]$token_fscore)
+agcm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="AGu"),]$token_fscore)
+agjw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="AGu"),]$token_fscore)
+agjm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="AGu"),]$token_fscore)
+
+btpacw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="BTP_abs"),]$token_fscore)
+btpacm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="BTP_abs"),]$token_fscore)
+btpajw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="BTP_abs"),]$token_fscore)
+btpajm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="BTP_abs"),]$token_fscore)
+ftpacw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="FTP_abs"),]$token_fscore)
+ftpacm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="FTP_abs"),]$token_fscore)
+ftpajw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="FTP_abs"),]$token_fscore)
+ftpajm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="FTP_abs"),]$token_fscore)
+btprcw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="BTP_rel"),]$token_fscore)
+btprcm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="BTP_rel"),]$token_fscore)
+btprjw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="BTP_rel"),]$token_fscore)
+btprjm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="BTP_rel"),]$token_fscore)
+ftprcw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="FTP_rel"),]$token_fscore)
+ftprcm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="FTP_rel"),]$token_fscore)
+ftprjw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="FTP_rel"),]$token_fscore)
+ftprjm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="FTP_rel"),]$token_fscore)
+
+dibscw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="DiBS"),]$token_fscore)
+dibscm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="DiBS"),]$token_fscore)
+dibsjw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="DiBS"),]$token_fscore)
+dibsjm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="DiBS"),]$token_fscore)
+
+base05cw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="Baseline0.5"),]$token_fscore)
+base05cm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes"| data$subalgorithm=="Baseline0.5"),]$token_fscore)
+base05jw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="Baseline0.5"),]$token_fscore)
+base05jm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="Baseline0.5"),]$token_fscore)
+base0cw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="Baseline0"),]$token_fscore)
+base0cm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="Baseline0"),]$token_fscore)
+base0jw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="Baseline0"),]$token_fscore)
+base0jm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="Baseline0"),]$token_fscore)
+base1cw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="Baseline1"),]$token_fscore)
+base1cm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="Baseline1"),]$token_fscore)
+base1jw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="Baseline1"),]$token_fscore)
+base1jm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="Baseline1"),]$token_fscore)
+
+
+matrix<-matrix( c("AG", round(agcw,3), round(agcm,3), round(agjw,3), round(agjm,3), "BTPa", round(btpacw,3), round(btpacm,3), round(btpajw,3), round(btpajm,3), "FTPa", round(ftpacw,3), round(ftpacm,3), round(ftpajw,3), round(ftpajm,3), "BTPr", round(btprcw,3), round(btprcm,3), round(btprjw,3), round(btprjm,3), "FTPr", round(ftprcw,3), round(ftprcm,3), round(ftprjw,3), round(ftprjm,3), "DiBS", round(dibscw,3), round(dibscm,3), round(dibsjw,3), round(dibsjm,3), "Baseline0.5",round(base05cw,3), round(base05cm,3), round(base05jw,3), round(base05jm,3), "Baseline0",round(base0cw,3), round(base0cm,3), round(base0jw,3), round(base0jm,3),"Baseline1",round(base1cw,3), round(base1cm,3), round(base1jw,3), round(base1jm,3) ), nrow=9,   ncol=5, byrow=TRUE)
+write.table(matrix, "~/Desktop/deleteme.txt", row.names=FALSE, col.names=c("Algorithms", "word Chintang", "word Japanese", "morpheme Chintang", "morphemes Japanese"),sep="\t&\t", quote = F )
+
 ```
 
 Mean F-scores are shown for languages, algorithms, and levels.
