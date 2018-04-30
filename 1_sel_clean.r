@@ -23,8 +23,7 @@ print(RESULT_FOLDER)
 clean<-function(corpus,toremove,selcol,LANGUAGE,LEVEL){
   #utterance_data -> corpus
   corpus[,selcol]=as.character(corpus[,selcol])
-  corpus[grep("?",corpus[,selcol],invert=T,fixed=T),]->corpus #remove sentences with untranscribed material
-  
+
   ##### special cleaning ####
   #"DELAY" appears throughout Chintang morphemes_utt; comparison between the morpheme and the utterance database suggests this is a human code --> remove before phonologization
   if(LANGUAGE=="Chintang" & LEVEL=="morphemes") gsub("DELAY","",corpus[,selcol],fixed=T)->corpus[,selcol]
@@ -100,15 +99,16 @@ utterance_data[grep("???",as.character(utterance_data[,"utterance_morphemes"]),i
 print("Size of dataframe after exclusion of ???")
 dim(utterance_data)
 
-#Chintang has one morpheme that has been annotated with a non-pronunciation code
+#Chintang has two morphemes that have been annotated with a non-pronunciation code
 utterance_data[grep("FS_C",as.character(utterance_data[,"utterance_morphemes"]),invert=T,fixed=T),]->utterance_data 
-print("Size of dataframe after exclusion of Chintang FS_C")
+utterance_data[grep("FS_N",as.character(utterance_data[,"utterance_morphemes"]),invert=T,fixed=T),]->utterance_data 
+print("Size of dataframe after exclusion of Chintang FS_C and FS_N")
 dim(utterance_data)
 
 print("$$$$$$$$$ ATTEMPT TO DETECT PROBLEMATIC CASES $$$$$")
 print("Print character, language, and level being targeted, then first 10 lines including that character (both morpheme and utterance representation)")
 # initial attempt to find problematic issues
-toremove=c("^","'","(",")","&","?",".",",","=","…","!","_","/","।","«","‡","§","™","•","�","Œ","£","±")
+toremove=c("^","'","(",")","&","?",".",",","=","…","!","_","/","।","«","‡","§","™","•","�","Œ","£","±","-")
 for(thiscar in toremove) {
   for(LANGUAGE in c("Chintang","Japanese")){
     for(LEVEL in c("words","morphemes")){  
@@ -117,6 +117,26 @@ for(thiscar in toremove) {
       x=utterance_data[utterance_data$language==LANGUAGE,]
       print(x[grep(thiscar,x[,selcol],fixed=T)[1:10],c("utterance","utterance_morphemes")])
     }}}
+
+print("$$$$$$$$$ FOCUS ON CHINTANG MORPHEMES $$$$$")
+LANGUAGE="Japanese"
+selcol="utterance_morphemes"
+x=utterance_data[utterance_data$language==LANGUAGE,selcol]
+print(paste("now checking the context for codes starting with &"))
+y=x[grep("&",x)]
+y=gsub(".*&","&",y)
+y=gsub(" .*","",y)
+y=y[!is.na(y)]
+print(table(y))
+illegalchars=c("&ADV","&CAUS","&COND","&CONN","&NEG","&IMP","&PAST","&POL","&PRES","&QUOT","&SGER","-HON_","_NEG")
+for(thiscar in illegalchars) x<-gsub(thiscar,"",x,fixed=T)
+
+for(thischar in c("_","=",".","^","&",":")){
+  print(paste("now checking the context of",thischar))
+  y=as.character(x[grep(thischar,x,fixed=T)])
+  print(y[1:100])
+}
+
 
 print("$$$$$$$$$ FOCUS ON JAPANESE MORPHEMES $$$$$")
 #focus on Japanese
