@@ -168,10 +168,21 @@ table <- as.data.frame(fitanova)
 table[,-1] <-round(table[,-1],3)
 write.table(table,"~/.../anovascores.txt", sep="\t&\t",eol="\n",quote = F)
 ```
+
 Analysis of variance (anova type III) results for all factors (language, algorithm and level) and their interactions on a linear regression where token F-scores are the dependent variable.
+
 ```{r tab:anovascoresalgo, echo=FALSE}
-plot(pressure)
+ 
+Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='AGu'),]), type=3)
+Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='BTP_abs'),]), type=3)
+Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='FTP_abs'),]), type=3)
+Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='BTP_rel'),]), type=3)
+Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='BTP_rel'),]), type=3)
+Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='DiBS'),]), type=3)
+
+
 ```
+
 Analysis of variance (anova) significance results for linear regressions where token F-scores are predicted by language and level within each algorithm type.
 
 ```{r respar2, echo=FALSE}
