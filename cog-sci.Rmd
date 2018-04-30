@@ -65,6 +65,7 @@ merge(data,stat,by="file")->data
 write.table(data,paste0(outfolder,"/res-stat.txt"),row.names=F,quote=T,sep=",")
 
 ```
+######### ALEX ###### is the write.table function a good one for .rmd? Or do we want to just print the results?
 
 Some corpus statistics exist at the Section 2.1 - maybe we should mention them as well? This paragraph:
 All child-directed and child-overheard speech had been carefully transcribed in a transparent orthography (as well as the child's own speech, which was not analyzed here). After processing, the Chintang corpus contained  296,939 utterances, with an average of 2.7 words, 5.4 syllables, and 11.4 phones per utterance; and the Japanese one 264,945 utterances (3 words, 5.7 syllables, 11.2 phones per utterance). Both corpora are approximately ten times larger than those frequently used for modeling studies \citep{saksida2017co,phillips2014bayesian}. All utterances where morpheme annotation was incomplete were removed, so the Japanese morpheme corpus after processing contained 85267 utterances with 2 morphemes, 3.2 syllables, 6.3 phones per utterance and the Chintang morpheme corpus contained 280319 utterances with 4.5 morphemes, 5.5 syllables, 11.4 phones per utterance.
@@ -186,7 +187,7 @@ ftpa<-ftpaan[c(2,3,4),(4)]
 btpr<-btpran[c(2,3,4),(4)]
 ftpr<-ftpran[c(2,3,4),(4)]
 dibs<-dibsan[c(2,3,4),(4)]
-anova_algorithm<-matrix( c(ag, btpa, ftpa,btpr,ftpr,dibs), nrow=3, ncol=2, byrow=FALSE, sep="\t&\t", quote = F)
+anova_algorithm<-matrix( c(ag, btpa, ftpa,btpr,ftpr,dibs), nrow=3, ncol=2, byrow=FALSE)
 colnames(anova_algorithm)<-c("AG", "BTPa", "FTPa", "BTPr", "FTPr", "DiBS")
 rownames(anova_algorithm)<-c("language", "level", "language:level")
 write.table(matrix, "~/.../anovaalgorithms.txt", sep="\t&\t", quote = F )
@@ -234,8 +235,13 @@ Percentage of variance explained ($R^2$) predicting F-scores (word level only) f
 
 
 ## Appendix
+
+######## ALEX ##### supposed that we have a different file  with results of segmentation only on full corpora
 ```{r tab:meanscores, echo=FALSE}
-plot(pressure)
+scores_full<-matrix( c(data[ which(data$language =='Chintang' & data$level =="word"),]$fscore, data[ which(data$language =='Chintang' & data$level =="morphemes"),]$fscore, data[ which(data$language =='Japanese' & data$level =="word"),]$fscore,data[ which(data$language =='Japanese' & data$level =="morphemes"),]$fscore), nrow=9, ncol=4, byrow=FALSE)
+
+write.table(scores_full, "~/.../scores_full.txt", col.names=c("word Chintang", "word Japanese", "morpheme Chintang", "morpheme Japanese"), row.names=c("AGu", "BTPa", "FTPa", "BTPr", "FTPr"), sep="\t&\t", quote = F )
+
 ```
 Token F-scores are shown for languages, algorithms, ran on the whole corpora.
 
