@@ -246,7 +246,9 @@ write.table(scores_full, "~/.../scores_full.txt", col.names=c("word Chintang", "
 Token F-scores are shown for languages, algorithms, ran on the whole corpora.
 
 ```{r tab:table-regres-complete, echo=FALSE}
-plot(pressure)
+round(summary(fit)$coefficients[,c(1,2,4)],4)->temp
+write.table(cbind(paste0(temp[,1]," (", temp[,2],")"),temp[,3]),"~/.../detailed_fit.txt",sep="\t&\t",eol="\n",quote = F)
+
 ```
 
 Regression results for factors and interactions.
@@ -261,7 +263,7 @@ Precision and Recall for all algorithms and languages on the word representation
 plot(pressure)
 ```
 
-Precision and Recall for all algorithms and languages on the word representational level.
+Precision and Recall for all algorithms and languages on the morpheme representational level.
 
 ```{r tab:noforeign, echo=FALSE}
 plot(pressure)
