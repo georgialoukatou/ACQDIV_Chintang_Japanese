@@ -238,7 +238,7 @@ Percentage of variance explained ($R^2$) predicting F-scores (word level only) f
 
 ######## ALEX ##### I supposed that we have a different file  with results of segmentation only on full corpora
 ```{r tab:meanscores, echo=FALSE}
-scores_full<-matrix( c(data[ which(data$language =='Chintang' & data$level =="word"),]$fscore, data[ which(data$language =='Chintang' & data$level =="morphemes"),]$fscore, data[ which(data$language =='Japanese' & data$level =="word"),]$fscore,data[ which(data$language =='Japanese' & data$level =="morphemes"),]$fscore), nrow=9, ncol=4, byrow=FALSE)
+scores_full<-matrix( c(data[ which(data$language =='Chintang' & data$level =="word"),]$token_fscore, data[ which(data$language =='Chintang' & data$level =="morphemes"),]$token_fscore, data[ which(data$language =='Japanese' & data$level =="word"),]$token_fscore,data[ which(data$language =='Japanese' & data$level =="morphemes"),]$token_fscore), nrow=9, ncol=4, byrow=FALSE)
 
 write.table(scores_full, "~/.../scores_full.txt", col.names=c("word Chintang", "word Japanese", "morpheme Chintang", "morpheme Japanese"), row.names=c("AGu", "BTPa", "FTPa", "BTPr", "FTPr"), sep="\t&\t", quote = F )
 
@@ -277,8 +277,12 @@ print(p)
 ```
 
 Precision and Recall for all algorithms and languages on the morpheme representational level.
-
+###### ALEX #### Also I am not sure about the file structure, I suppose that Chintang and Chintang without Nepali exist in a separate file
 ```{r tab:noforeign, echo=FALSE}
-plot(pressure)
+data<-read.csv(...)-> data
+chintang_onlyl<-matrix( c(data[ which(data$language =='Chintang_only' & data$level =="word"),]$token_fscore, data[ which(data$language =='Chintang_only' & data$level =="morphemes"),]$fscore), nrow=9, ncol=2, byrow=FALSE)
+
+write.table(chintang_only, "~/.../chintang_only.txt", col.names=c("word Chintang without Nepali", "morpheme Chintang without Nepali"), row.names=c("AGu", "BTPa", "FTPa", "BTPr", "FTPr", "Baseline0.5", "Baseline0", "Baseline1"), sep="\t&\t", quote = F )
+
 ```
 Token F-scores are shown for Chintang without Nepali.
