@@ -66,7 +66,7 @@ write.table(data,paste0(outfolder,"/res-stat.txt"),row.names=F,quote=T,sep=",")
 
 ```
 
-##Some corpus statistics exist at the Section 2.1 - maybe we should mention them as well. This paragraph:
+Some corpus statistics exist at the Section 2.1 - maybe we should mention them as well? This paragraph:
 All child-directed and child-overheard speech had been carefully transcribed in a transparent orthography (as well as the child's own speech, which was not analyzed here). After processing, the Chintang corpus contained  296,939 utterances, with an average of 2.7 words, 5.4 syllables, and 11.4 phones per utterance; and the Japanese one 264,945 utterances (3 words, 5.7 syllables, 11.2 phones per utterance). Both corpora are approximately ten times larger than those frequently used for modeling studies \citep{saksida2017co,phillips2014bayesian}. All utterances where morpheme annotation was incomplete were removed, so the Japanese morpheme corpus after processing contained 85267 utterances with 2 morphemes, 3.2 syllables, 6.3 phones per utterance and the Chintang morpheme corpus contained 280319 utterances with 4.5 morphemes, 5.5 syllables, 11.4 phones per utterance.
 
 ## General results section
@@ -115,14 +115,17 @@ btpacw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$su
 btpacm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="BTP_abs"),]$token_fscore)
 btpajw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="BTP_abs"),]$token_fscore)
 btpajm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="BTP_abs"),]$token_fscore)
+
 ftpacw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="FTP_abs"),]$token_fscore)
 ftpacm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="FTP_abs"),]$token_fscore)
 ftpajw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="FTP_abs"),]$token_fscore)
 ftpajm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="FTP_abs"),]$token_fscore)
+
 btprcw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="BTP_rel"),]$token_fscore)
 btprcm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="BTP_rel"),]$token_fscore)
 btprjw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="BTP_rel"),]$token_fscore)
 btprjm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="BTP_rel"),]$token_fscore)
+
 ftprcw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="FTP_rel"),]$token_fscore)
 ftprcm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="FTP_rel"),]$token_fscore)
 ftprjw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="FTP_rel"),]$token_fscore)
@@ -137,10 +140,12 @@ base05cw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$
 base05cm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes"| data$subalgorithm=="Baseline0.5"),]$token_fscore)
 base05jw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="Baseline0.5"),]$token_fscore)
 base05jm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="Baseline0.5"),]$token_fscore)
+
 base0cw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="Baseline0"),]$token_fscore)
 base0cm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="Baseline0"),]$token_fscore)
 base0jw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="Baseline0"),]$token_fscore)
 base0jm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | data$subalgorithm=="Baseline0"),]$token_fscore)
+
 base1cw<-mean(data[which(data$language=="Chintang" | data$level=="word" | data$subalgorithm=="Baseline1"),]$token_fscore)
 base1cm<-mean(data[which(data$language=="Chintang" | data$level=="morphemes" | data$subalgorithm=="Baseline1"),]$token_fscore)
 base1jw<-mean(data[which(data$language=="Japanese" | data$level=="word" | data$subalgorithm=="Baseline1"),]$token_fscore)
@@ -148,7 +153,8 @@ base1jm<-mean(data[which(data$language=="Japanese" | data$level=="morphemes" | d
 
 
 matrix<-matrix( c("AG", round(agcw,3), round(agcm,3), round(agjw,3), round(agjm,3), "BTPa", round(btpacw,3), round(btpacm,3), round(btpajw,3), round(btpajm,3), "FTPa", round(ftpacw,3), round(ftpacm,3), round(ftpajw,3), round(ftpajm,3), "BTPr", round(btprcw,3), round(btprcm,3), round(btprjw,3), round(btprjm,3), "FTPr", round(ftprcw,3), round(ftprcm,3), round(ftprjw,3), round(ftprjm,3), "DiBS", round(dibscw,3), round(dibscm,3), round(dibsjw,3), round(dibsjm,3), "Baseline0.5",round(base05cw,3), round(base05cm,3), round(base05jw,3), round(base05jm,3), "Baseline0",round(base0cw,3), round(base0cm,3), round(base0jw,3), round(base0jm,3),"Baseline1",round(base1cw,3), round(base1cm,3), round(base1jw,3), round(base1jm,3) ), nrow=9,   ncol=5, byrow=TRUE)
-write.table(matrix, "~/Desktop/deleteme.txt", row.names=FALSE, col.names=c("Algorithms", "word Chintang", "word Japanese", "morpheme Chintang", "morphemes Japanese"),sep="\t&\t", quote = F )
+
+write.table(matrix, "~/.../meanscores.txt", row.names=FALSE, col.names=c("Algorithms", "word Chintang", "word Japanese", "morph. Chintang", "morph. Japanese"),sep="\t&\t", quote = F )
 
 ```
 
@@ -156,7 +162,11 @@ Mean F-scores are shown for languages, algorithms, and levels.
 The baselines capture random segmentations of the syllabified corpus. Baseline 0.5 adds word boundaries with a probability ($p$)  of $0.5$ at each syllable boundary. Baseline 0 uses $p=0$ to generate an utterance baseline, considering each utterance as a word. Baseline 1 has $p=1$ cuts at all syllable boundaries, thus treating every syllable as a word.
 
 ```{r tab:anovascores, echo=FALSE}
-plot(pressure)
+library(car)
+fitanova<-Anova(fit, type=3)
+table <- as.data.frame(fitanova)
+table[,-1] <-round(table[,-1],3)
+write.table(table,"~/.../anovascores.txt", sep="\t&\t",eol="\n",quote = F)
 ```
 Analysis of variance (anova type III) results for all factors (language, algorithm and level) and their interactions on a linear regression where token F-scores are the dependent variable.
 ```{r tab:anovascoresalgo, echo=FALSE}
