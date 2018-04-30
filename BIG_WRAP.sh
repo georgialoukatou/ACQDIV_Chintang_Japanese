@@ -10,7 +10,7 @@
 SCRIPT_FOLDER="/scratch1/users/acristia/acqdiv/ACQDIV_Chintang_Japanese" #where the scripts are
 ROOT="/scratch1/users/acristia/acqdiv/" #where you want results to be saved
 SELECTION="full" # by default, this script analyzes the full database; you can also rerun it with the option "noforeign", in which case we recommend the N_PARTS to be 5
-N_PARTS=1 # number of subcorpora to use to be able to draw confidence intervals
+N_PARTS=10 # number of subcorpora to use to be able to draw confidence intervals
 ####################### USER, ALL DONE!
 
 #------------ corpus preparation stage ------------#
@@ -47,6 +47,6 @@ while [[ `qstat  | grep "acqdiv" | wc -l` -gt 0 ]] ; do
     sleep 1
 done
 
-bash $SCRIPT_FOLDER/5_collapse_results.sh $ROOT
+#bash $SCRIPT_FOLDER/5_collapse_results.sh $ROOT
 
 

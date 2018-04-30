@@ -140,6 +140,7 @@ echo processing $ORTHO into $RESULT_FOLDER
 		sed 's/̵//g'  |# these are necessary in case these diacritics escaped rules above; they cannot be done in the cleaning stage because they might distinguish sounds
 		sed 's/̪//g'  |
 		sed 's/~//g'  |
+		sed 's/¨//g'  |
                sed 's/̟ ̟//g' | 
 		sed 's/¨//g'  |
 		sed 's/˜//g'  |

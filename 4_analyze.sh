@@ -72,9 +72,9 @@ echo $THISGOLD $out
 	wordseg-dibs -t phrasal -o ${THISTAG}_segmented.dibs.txt $PREP_PHONE  $THISTAG
 	wordseg-eval -o ${THISTAG}_eval.dibs.txt ${THISTAG}_segmented.dibs.txt $THISGOLD
 
-        echo "module load python-anaconda boost && \
-          source activate /cm/shared/apps/python-anaconda/envs/wordseg && \
-          cat $PREP_PHONE | wordseg-ag $SCRIPT_FOLDER/Colloc0_acqdiv.lt Colloc0 --njobs 8 | tee ${THISTAG}_segmented.ag.txt | wordseg-eval $THISGOLD  > ${THISTAG}_eval.ag.txt || exit 1"   | qsub -S /bin/bash -V -cwd -j y -pe mpich 8 -N acqdiv_$FOLDER 
+#        echo "module load python-anaconda boost && \
+#          source activate /cm/shared/apps/python-anaconda/envs/wordseg && \
+#          cat $PREP_PHONE | wordseg-ag $SCRIPT_FOLDER/Colloc0_acqdiv.lt Colloc0 --njobs 8 | tee ${THISTAG}_segmented.ag.txt | wordseg-eval $THISGOLD  > ${THISTAG}_eval.ag.txt || exit 1"   | qsub -S /bin/bash -V -cwd -j y -pe mpich 8 -N acqdiv_$FOLDER 
 
 	#baselines
 	cat $PREP_SYLL | wordseg-baseline -P 1 > ${THISTAG}_segmented.baselinesyll1.txt

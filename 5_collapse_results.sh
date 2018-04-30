@@ -2,9 +2,6 @@
 
 RESFOLDER=$1 
 
-
-
-
 for THISRES in $RESFOLDER/*/*/*eval* $RESFOLDER/*/*/*/*eval*
 do
 
@@ -28,7 +25,7 @@ sed -i "1s/^/$header\n/" $RESFOLDER/results.txt
 for THISRES in $RESFOLDER/*/*/*stat* $RESFOLDER/*/*/*/*stat*
 do
 
-echo writing $THISRES into $RESFOLDER/results.txt
+echo writing $THISRES into $RESFOLDER/stats.txt
 	# flip the column within each result into a comma-separated horizontal vector
 	res=`cat $THISRES | awk '{print $3}' | tr '\n' ',' | sed 's/,$//'`  
 	echo "$THISRES,$res" >> $RESFOLDER/stats.txt
