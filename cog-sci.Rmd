@@ -186,7 +186,7 @@ ftpa<-ftpaan[c(2,3,4),(4)]
 btpr<-btpran[c(2,3,4),(4)]
 ftpr<-ftpran[c(2,3,4),(4)]
 dibs<-dibsan[c(2,3,4),(4)]
-anova_algorithm<-matrix( c(ag, btpa, ftpa,btpr,ftpr,dibs), nrow=3, ncol=2, byrow=FALSE, ,sep="\t&\t", quote = F)
+anova_algorithm<-matrix( c(ag, btpa, ftpa,btpr,ftpr,dibs), nrow=3, ncol=2, byrow=FALSE, sep="\t&\t", quote = F)
 colnames(anova_algorithm)<-c("AG", "BTPa", "FTPa", "BTPr", "FTPr", "DiBS")
 rownames(anova_algorithm)<-c("language", "level", "language:level")
 write.table(matrix, "~/.../anovaalgorithms.txt", sep="\t&\t", quote = F )
@@ -196,9 +196,31 @@ write.table(matrix, "~/.../anovaalgorithms.txt", sep="\t&\t", quote = F )
 Analysis of variance (anova) significance results for linear regressions where token F-scores are predicted by language and level within each algorithm type.
 
 ```{r respar2, echo=FALSE}
-plot(pressure)
+R2entropy <- round(summary(lm(token_fscore~corpus_entropy, data))$adj.r.squared,3)
+R2tokentype <- round(summary(lm(token_fscore~word_token_type, data))$adj.r.squared,3)
+R2syllutter <- round(summary(lm(token_fscore~syll_token_utt, data))$adj.r.squared,3)
+R2phoneword <- round(summary(lm(token_fscore~phone_token_word, data))$adj.r.squared,3)
+R2hapaxtype <- round(summary(lm(token_fscore~hapax, data))$adj.r.squared,3)
+
+Rnorm<- round(summary(fit)$adj.r.squared,3)
+
+R2entropynorm <- round(summary(lm(token_fscore~corpus_entropy*language*algorithm, data))$adj.r.squared,3)
+R2tokentypenorm <- round(summary(lm(token_fscore~word_token_type*language*algorithm, data))$adj.r.squared,3)
+R2syllutternorm <- round(summary(lm(token_fscore~syll_token_utt*language*algorithm, data))$adj.r.squared,3)
+R2phonewordnorm <- round(summary(lm(token_fscore~phone_token_word*language*algorithm, data))$adj.r.squared,3)
+R2hapaxtypenorm <- round(summary(lm(token_fscore~hapax*language*algorithm, data))$adj.r.squared,3)
+
+
+array1<-c(R2entropy,R2tokentype,R2syllutter,R2phoneword,R2hapaxtype)
+array2<-c(rep(Rnorm,5))
+array3<-c(R2entropynorm,R2tokentypenorm,R2syllutternorm,R2phonewordnorm,R2hapaxtypenorm)
+fit_statistics<-matrix( c(as.numeric(array1), as.numeric(array2), as.numeric(array3)), nrow=5, ncol=3, byrow=FALSE))
+write.table(fit_statistics, "~/.../fitstatistics.txt", row.names=c("entropy", "token/type", "syllable/utterance", "phone/word", "hapax/type"), col.names=c("$R^2$ Factor", " $R^2$ Lang x Algo", "$R^2$ Lang x Algo x Factor"), sep="\t&\t", quote = F )
+
 ```
-We investigated whether these effects may be due to potential confounds, in particular the possibility that one of the languages is intrinsically more ambiguous to segment. To this effect, we estimated the segmentation entropy of the corpora using the Normalized Segmentation Entropy formula of \citet{fourtassi2013whyisenglishsoeasytosegment}, and focused on the word level, as they had. In their study, English was less ambiguous than Japanese, with entropies of $.0021$ and $.0156$ respectively. The segmentation entropy of the Japanese ACQDIV corpus was $.014$, thus close to their Japanese results. Surprisingly,  for Chintang it was $.007$ - closer to English than to Japanese. As obvious from this description, in the present sample morphological complexity and ambiguity (indexed by entropy) were not correlated. Moreover, in a regression analysis, where the other two factors (language and algorithm) were included as well, entropy failed to explain any variance, with a non-significant coefficient estimate of $ -10.70 (16.04)$; notice that the sign is nonetheless in line with \citet{fourtassi2013whyisenglishsoeasytosegment}'s predictions that lower entropy will lead to higher scores.
+We investigated whether these effects may be due to potential confounds, in particular the possibility that one of the languages is intrinsically more ambiguous to segment. To this effect, we estimated the segmentation entropy of the corpora using the Normalized Segmentation Entropy formula of \citet{fourtassi2013whyisenglishsoeasytosegment}, and focused on the word level, as they had. In their study, English was less ambiguous than Japanese, with entropies of $.0021$ and $.0156$ respectively. The segmentation entropy of the Japanese ACQDIV corpus was `r mean(data[which(data$language=="Japanese" | data$level=="word"),]$corpus_entropy)`, thus close to their Japanese results. Surprisingly,  for Chintang it was `r . mean(data[which(data$language=="Japanese" | data$level=="word"),]$corpus_entropy)` - closer to English than to Japanese. As obvious from this description, in the present sample morphological complexity and ambiguity (indexed by entropy) were not correlated. Moreover, in a regression analysis, where the other two factors (language and algorithm) were included as well, entropy failed to explain any variance, with a non-significant coefficient estimate of $ -10.70 (16.04)$; notice that the sign is nonetheless in line with \citet{fourtassi2013whyisenglishsoeasytosegment}'s predictions that lower entropy will lead to higher scores.
+########## ALEX ###### Giving the entropy of the whole corpus instead of the mean of its subparts might be better, but I am still not sure I understand the structure of the full corpus segmentation files.  
+
 
 ```{r respar3, echo=FALSE}
 plot(pressure)
