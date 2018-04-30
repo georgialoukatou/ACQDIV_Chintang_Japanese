@@ -173,13 +173,23 @@ Analysis of variance (anova type III) results for all factors (language, algorit
 
 ```{r tab:anovascoresalgo, echo=FALSE}
  
-Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='AGu'),]), type=3)
-Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='BTP_abs'),]), type=3)
-Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='FTP_abs'),]), type=3)
-Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='BTP_rel'),]), type=3)
-Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='BTP_rel'),]), type=3)
-Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='DiBS'),]), type=3)
-
+agan<-Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='AGu'),]), type=3)
+btpaan<-Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='BTP_abs'),]), type=3)
+ftpaan<-Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='FTP_abs'),]), type=3)
+btpran<-Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='BTP_rel'),]), type=3)
+ftpran<-Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='BTP_rel'),]), type=3)
+dibsan<-Anova(lm(token_fscore ~ language * level, data[ which(data$subalgorithm =='DiBS'),]), type=3)
+ag<-agan[c(2,3,4),(4)]  
+################ ALEX ############ I can't save the stars of significance, only the p value. If you know how to, it would be more readable.
+btpa<-btpaan[c(2,3,4),(4)]
+ftpa<-ftpaan[c(2,3,4),(4)]
+btpr<-btpran[c(2,3,4),(4)]
+ftpr<-ftpran[c(2,3,4),(4)]
+dibs<-dibsan[c(2,3,4),(4)]
+anova_algorithm<-matrix( c(ag, btpa, ftpa,btpr,ftpr,dibs), nrow=3, ncol=2, byrow=FALSE, ,sep="\t&\t", quote = F)
+colnames(anova_algorithm)<-c("AG", "BTPa", "FTPa", "BTPr", "FTPr", "DiBS")
+rownames(anova_algorithm)<-c("language", "level", "language:level")
+write.table(matrix, "~/.../anovaalgorithms.txt", sep="\t&\t", quote = F )
 
 ```
 
