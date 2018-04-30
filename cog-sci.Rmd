@@ -66,6 +66,9 @@ write.table(data,paste0(outfolder,"/res-stat.txt"),row.names=F,quote=T,sep=",")
 
 ```
 
+##Some corpus statistics exist at the Section 2.1 - maybe we should mention them as well. This paragraph:
+All child-directed and child-overheard speech had been carefully transcribed in a transparent orthography (as well as the child's own speech, which was not analyzed here). After processing, the Chintang corpus contained  296,939 utterances, with an average of 2.7 words, 5.4 syllables, and 11.4 phones per utterance; and the Japanese one 264,945 utterances (3 words, 5.7 syllables, 11.2 phones per utterance). Both corpora are approximately ten times larger than those frequently used for modeling studies \citep{saksida2017co,phillips2014bayesian}. All utterances where morpheme annotation was incomplete were removed, so the Japanese morpheme corpus after processing contained 85267 utterances with 2 morphemes, 3.2 syllables, 6.3 phones per utterance and the Chintang morpheme corpus contained 280319 utterances with 4.5 morphemes, 5.5 syllables, 11.4 phones per utterance.
+
 ## General results section
 
 
