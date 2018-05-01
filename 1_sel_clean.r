@@ -2,7 +2,7 @@
 
 # Loops through all the corpora and levels
 # By Georgia Loukatou georgialoukatou@gmail.com
-# Last changed Alex Cristia alecristia@gmail.com 2018-04-13
+# Last changed Alex Cristia alecristia@gmail.com 2018-05-01
 
 # get arguments passed by user
 args<-commandArgs(TRUE)
@@ -99,15 +99,11 @@ utterance_data[grep("???",as.character(utterance_data[,"utterance_morphemes"]),i
 print("Size of dataframe after exclusion of ???")
 dim(utterance_data)
 
-#Chintang has two morphemes that have been annotated with a non-pronunciation code
-utterance_data[grep("FS_.",as.character(utterance_data[,"utterance_morphemes"]),invert=T),]->utterance_data 
-print("Size of dataframe after exclusion of Chintang FS_C and FS_N")
-dim(utterance_data)
 
 print("$$$$$$$$$ ATTEMPT TO DETECT PROBLEMATIC CASES $$$$$")
 print("Print character, language, and level being targeted, then first 10 lines including that character (both morpheme and utterance representation)")
 # initial attempt to find problematic issues
-toremove=c("^","'","(",")","&","?",".",",","=","…","!","_","/","।","«","‡","§","™","•","�","Œ","£","±","-","ǃ")
+toremove=c("^","'","(",")","&","?",".",",","=","…","!","_","/","।","«","‡","§","™","•","�","Œ","£","±","-","ǃ","\207","\340")
 for(thiscar in toremove) {
   for(LANGUAGE in c("Chintang","Japanese")){
     for(LEVEL in c("words","morphemes")){  
@@ -117,6 +113,20 @@ for(thiscar in toremove) {
       print(x[grep(thiscar,x[,selcol],fixed=T)[1:10],c("utterance","utterance_morphemes")])
     }}}
 
+print("$$$$$$$$$ FOCUS ON CHINTANG MORPHEMES $$$$$")
+LANGUAGE="Chintang"
+selcol="utterance_morphemes"
+#Chintang has two morphemes that have been annotated with a non-pronunciation code
+x=utterance_data[utterance_data$language==LANGUAGE,selcol]
+print(paste("now checking the context for codes starting with FS_"))
+y=x[grep("FS_",x)]
+y=gsub(".*FS_","FS_",y)
+y=gsub(" .*","",y)
+y=y[!is.na(y)]
+print(table(y))
+utterance_data[grep("FS_.",as.character(utterance_data[,"utterance_morphemes"]),invert=T),]->utterance_data 
+print("Size of dataframe after exclusion of Chintang FS_C and FS_N")
+dim(utterance_data)
 
 print("$$$$$$$$$ FOCUS ON JAPANESE MORPHEMES $$$$$")
 #focus on Japanese
