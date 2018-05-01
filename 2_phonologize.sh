@@ -8,11 +8,10 @@
 #########VARIABLES
 PATH_TO_SCRIPTS=$1
 ROOT=$2	#this is the name of the input FOLDER
+SELECTION=$3
 #########
 
-LC_ALL=C
-
-for ORTHO in $ROOT/*.txt ; do
+for ORTHO in $ROOT/${SELECTION}*.txt ; do
 	ROOT=$(dirname "$ORTHO")
 	KEYNAME=$(basename "$ORTHO" .txt)
 
@@ -105,7 +104,7 @@ echo processing $ORTHO into $RESULT_FOLDER
 		sed 's/ui/5/g' | #diphtongs actual phonemes
 		sed 's/au/6/g' | #diphtongs actual phonemes
 		sed 's/1i/7/g' | #diphtongs actual phonemes
-		sed 's/[ãààãâāåaaååå̀ã]/a/g' | #no length or other  distinctions for phonemes
+		sed 's/[ãāãààãâāåaaååå̀ã]/a/g' | #no length or other  distinctions for phonemes
 		sed 's/[ôò]/o/g' |#no phonemic distinction
 		sed 's/[èẽëË]/e/g' |#no phonemic distinction
 		sed 's/ɨ/1/g' | #valid vowel phoneme
@@ -133,7 +132,8 @@ echo processing $ORTHO into $RESULT_FOLDER
 		sed 's/kh/Q/g' |#phoneme
 		sed 's/th/X/g' |#phoneme
 		sed 's/ph/F/g' |
-		sed 's/ʔ/q/g' |#phoneme
+		sed 's/[ʔ?]/q/g' |#phoneme
+		sed 's/a?/aq/g' |#this sequence occurred 3 times and was escaping rewrites above
 		sed 's/[ṽv]/v/g' |#no phonemic distinction
 		sed 's/ptn/pn/g' | # second consonant dropped if cluster of three, ptn
 		sed 's/[ɡg]/g/g' |# no phonemic distinction
@@ -160,6 +160,7 @@ echo processing $ORTHO into $RESULT_FOLDER
                 sed 's/^[ ]*//g'  | # delete sentence-initial blanks
                 sed 's/[ ]*$//g' | # delete sentence-final blanks
                 tr -s " " | #single spaces
+                grep "[a-z]" | # delete lines with no text
                 tr " " ":" | #replace spaces with intermediate symbol for word boundary
                 sed 's/$/:/g' | #make sure each sentence ends with a word boundary ...
                 tr -s ":" | #... but only one of them

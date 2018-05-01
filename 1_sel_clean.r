@@ -13,6 +13,14 @@ RESULT_FOLDER<-args[2]
 # INPUT_FILE="/Users/acristia/Documents/acqdiv/acqdiv_corpus_2017-09-28_CRJ.rda"
 # RESULT_FOLDER="/Users/acristia/Documents/acqdiv/"
 
+
+
+########
+
+#real processing begins -- load file
+acq<-load(INPUT_FILE)
+
+#keep a record
 sink("record_clean.txt")
 
 print(INPUT_FILE)
@@ -23,11 +31,18 @@ print(RESULT_FOLDER)
 clean<-function(corpus,toremove,selcol,LANGUAGE,LEVEL){
   #utterance_data -> corpus
   corpus[,selcol]=as.character(corpus[,selcol])
-
+  
   ##### special cleaning ####
+  #a few characters are causing issues down the line; they appear in only one utterance, which is suspicious
+  # the next line replaces them with similar characters which are NOT problematic OR deletes them altogether
+  if(LANGUAGE=="Chintang" & LEVEL=="words") {
+    gsub("\314\265","\314\200",corpus[,selcol],fixed=T)->corpus[,selcol]
+    gsub("\340\245\207","",corpus[,selcol],fixed=T)->corpus[,selcol] #the utterance is "\340\245\207ekbe", morphemes "ek -be\312\224"; all other instances of this morpheme map onto plain "ekbe" in utterance
+    
+  }
   #"DELAY" appears throughout Chintang morphemes_utt; comparison between the morpheme and the utterance database suggests this is a human code --> remove before phonologization
   if(LANGUAGE=="Chintang" & LEVEL=="morphemes") gsub("DELAY","",corpus[,selcol],fixed=T)->corpus[,selcol]
-    #"-laugh" appears 1x Japanese utt; comparison between the morpheme and the utterance database suggests this is a human code --> remove before phonologization
+  #"-laugh" appears 1x Japanese utt; comparison between the morpheme and the utterance database suggests this is a human code --> remove before phonologization
   if(LANGUAGE=="Japanese" & LEVEL=="words") gsub("-laugh","",corpus[,selcol],fixed=T)->corpus[,selcol]
   #lots of codes in Japanese morph; comparison between the morpheme and the utterance database suggests this is a human code --> remove before phonologization
   if(LANGUAGE=="Japanese" & LEVEL=="morphemes"){
@@ -35,16 +50,16 @@ clean<-function(corpus,toremove,selcol,LANGUAGE,LEVEL){
     for(thiscar in illegalchars) corpus[,selcol]<-gsub(thiscar,"",corpus[,selcol],fixed=T)
   } 
   
-    if(LANGUAGE=="Japanese" & LEVEL=="morphemes"){
-      for(thissep in c("-","_","=","&",".")) corpus[,selcol]<-gsub(thissep," ",corpus[,selcol],fixed=T)
-     }
+  if(LANGUAGE=="Japanese" & LEVEL=="morphemes"){
+    for(thissep in c("-","_","=","&",".")) corpus[,selcol]<-gsub(thissep," ",corpus[,selcol],fixed=T)
+  }
   if(LANGUAGE=="Japanese" & LEVEL=="words"){
     corpus[,selcol]<-gsub("_"," ",corpus[,selcol],fixed=T)
   }
   ##### regular cleaning ####
   # remove illegal characters passed by user
   for(thiscar in toremove) corpus[,selcol]<-gsub(thiscar,"",corpus[,selcol],fixed=T)
-
+  
   #remove trailing, initial, or double spaces
   corpus[,selcol]<-gsub("^ ", "", corpus[,selcol])
   corpus[,selcol]<-gsub(" $", "", corpus[,selcol])
@@ -52,16 +67,10 @@ clean<-function(corpus,toremove,selcol,LANGUAGE,LEVEL){
   
   #remove empty utterances
   corpus[corpus[,selcol]!="",]->corpus
-
+  
   #return
   corpus
 }
-
-
-########
-
-#real processing begins -- load file
-acq<-load(INPUT_FILE)
 
 #get morpheme data to generate dataframes with and without foreign words
 morpheme_data<-data.frame(words)
@@ -103,7 +112,7 @@ dim(utterance_data)
 print("$$$$$$$$$ ATTEMPT TO DETECT PROBLEMATIC CASES $$$$$")
 print("Print character, language, and level being targeted, then first 10 lines including that character (both morpheme and utterance representation)")
 # initial attempt to find problematic issues
-toremove=c("^","'","(",")","&","?",".",",","=","…","!","_","/","।","«","‡","§","™","•","�","Œ","£","±","-","ǃ","\207","\340")
+toremove=c("^","'","(",")","&","?",".",",","=","…","!","_","/","।","«","‡","§","™","•","�","Œ","£","±","-","ǃ") 
 for(thiscar in toremove) {
   for(LANGUAGE in c("Chintang","Japanese")){
     for(LEVEL in c("words","morphemes")){  
@@ -116,7 +125,7 @@ for(thiscar in toremove) {
 print("$$$$$$$$$ FOCUS ON CHINTANG MORPHEMES $$$$$")
 LANGUAGE="Chintang"
 selcol="utterance_morphemes"
-#Chintang has two morphemes that have been annotated with a non-pronunciation code
+#Chintang has a few morphemes that have been annotated with a non-pronunciation code
 x=utterance_data[utterance_data$language==LANGUAGE,selcol]
 print(paste("now checking the context for codes starting with FS_"))
 y=x[grep("FS_",x)]
@@ -124,7 +133,15 @@ y=gsub(".*FS_","FS_",y)
 y=gsub(" .*","",y)
 y=y[!is.na(y)]
 print(table(y))
+print(paste("now checking the context for codes starting with V"))
+y=x[grep("V",x)]
+head(y)
+length(y)
+y=x[grep("kV",x)]
+length(y)
+#remove utterances with them
 utterance_data[grep("FS_.",as.character(utterance_data[,"utterance_morphemes"]),invert=T),]->utterance_data 
+utterance_data[grep("kV",as.character(utterance_data[,"utterance_morphemes"]),invert=T),]->utterance_data 
 print("Size of dataframe after exclusion of Chintang FS_C and FS_N")
 dim(utterance_data)
 
