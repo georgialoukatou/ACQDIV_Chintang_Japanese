@@ -1,5 +1,5 @@
 ---
-title: "Supplementary materials to wordseg-xlling"
+title: "Supplementary materials to wordseg-xling"
 author: "alejandrina cristia"
 date: "4/27/2018"
 output: html_document
@@ -11,13 +11,15 @@ RECALC=FALSE #turn TRUE if you need to re-run the analyses from scratch (i.e. re
 
 knitr::opts_chunk$set(echo = TRUE)
 args<-commandArgs(trailingOnly=TRUE)
-resfile=args[1]
-statfile=args[2]
-folder=args[3]
-resfile<-"results.txt"
-statfile="stats.txt"
+#args<-commandArgs(trailingOnly=TRUE)
+#resfile=args[1]
+#statfile=args[2]
+#folder=args[3]
+#outfolder=args[4]
+resfile<-"acqdiv/results.txt"
+statfile="acqdiv/stats.txt"
 folder="/scratch1/users/acristia/acqdiv/" #name of the root where files where stored
-outfolder="." #location you want all figures and temp data to be stored in
+outfolder="~/Documents/acqdiv/" #location you want all figures and temp data to be stored in
 
 ```
 
@@ -85,23 +87,25 @@ stat$folder=gsub(folder,"",stat$folder)
 stat$file=gsub("stats.txt.*","",stat$folder)
 stat$part=F
 stat$part[grep("part",stat$file)]<-T
+stat$full=F
+stat$full[grep("full",stat$file)]<-T
 stat$language=gsub("/.*","",stat$folder)
 stat$level=gsub("/.*","",gsub(".*[ge]/","",stat$folder))
-ch_w=stat[!stat$part & stat$language=="Chintang" & stat$level=="words",]
-ch_m=stat[!stat$part & stat$language=="Chintang" & stat$level=="morphemes",]
-j_w=stat[!stat$part & stat$language=="Japanese" & stat$level=="words",]
-j_m=stat[!stat$part & stat$language=="Japanese" & stat$level=="morphemes",]
+ch_w=stat[!stat$part & stat$full & stat$language=="Chintang" & stat$level=="words",]
+ch_m=stat[!stat$part & stat$full & stat$language=="Chintang" & stat$level=="morphemes",]
+j_w=stat[!stat$part & stat$full & stat$language=="Japanese" & stat$level=="words",]
+j_m=stat[!stat$part & stat$full & stat$language=="Japanese" & stat$level=="morphemes",]
 ```
 
 **The code above allowed us to fill in this paragraph:**
 
-All child-directed and child-overheard speech had been carefully transcribed in a transparent orthography (as well as the child's own speech, which was not analyzed here). After processing, the Chintang corpus contained  `r ch_w$words_tokens` utterances, with an average of `r ch_w$words_tokens/ch_w$corpus_nutts` words, `r ch_w$syllables_tokens/ch_w$corpus_nutts` syllables, and `r ch_w$phones_tokens/ch_w$corpus_nutts` phones per utterance; and the Japanese one `r j_w$words_tokens` utterances, with an average of `r j_w$words_tokens/j_w$corpus_nutts` words, `r j_w$syllables_tokens/j_w$corpus_nutts` syllables, and `r j_w$phones_tokens/j_w$corpus_nutts` phones per utterance. 
+All child-directed and child-overheard speech had been carefully transcribed in a transparent orthography (as well as the child's own speech, which was not analyzed here). After processing, the Chintang corpus contained  `r ch_w$words_tokens` utterances, with an average of `r round(ch_w$words_tokens/ch_w$corpus_nutts,2)` words, `r round(ch_w$syllables_tokens/ch_w$corpus_nutts,2)` syllables, and `r round(ch_w$phones_tokens/ch_w$corpus_nutts,2)` phones per utterance; and the Japanese one `r j_w$words_tokens` utterances, with an average of `r round(j_w$words_tokens/j_w$corpus_nutts,2)` words, `r round(j_w$syllables_tokens/j_w$corpus_nutts,2)` syllables, and `r round(j_w$phones_tokens/j_w$corpus_nutts,2)` phones per utterance. 
 
 ## General results section
 
 ```{r res-par1, echo=FALSE}
 read.csv(paste0(outfolder,"/res-stat.txt"))->data
-data$subalgorithm<-factor(data$subalgorithm,c("AG", "BTPa", "FTPa", "BTPr", "FTPr", "DiBS","base1","base0.5","base0"))
+data$subalgorithm<-factor(data$subalgorithm,c("AG", "BTPa", "FTPa", "BTPr", "FTPr", "DiBS","base1","base0"))
 data$level<-factor(data$level,c("words", "morphemes"))
 subset(data,!is.na(subcorpus))->parts
 subset(data,!is.na(corpus))->wholes 
@@ -114,20 +118,31 @@ mainLM <- lm(fscores ~ language * level * subalgorithm + (1 / file), parts)
 
 **The code above allowed us to fill in this paragraph:**
 
-Throughout the analyses, we focused on token F-scores separately for each combination of language, level, and type of algorithm. A regression predicting F-scores from language, level, algorithm and their interactions accounted for most of the variance in the data, $R^2=$.`r round(summary(mainLM)$adj.r.squared,2)` ($F(`r summary(mainLM)$df[1]-1`, `r summary(mainLM)$df[2]`) $=$ `r summary(mainLM)$fstatistic[1]`, $p < $ `r round(p,3)`). As predicted, the coefficient estimating the language effect between Chintang and Japanese is positive (`r round(coefs["languageJapanese","Estimate"],2)`), suggesting higher scores for the latter. Interestingly, this effect is smaller than that of level (`r round(coefs["levelmorphemes","Estimate"],2)`, indicating evaluation on words lead to lower scores than that on morphemes). The presence of all 2- and 3-way interactions, however, discourages a simple reading of these main effects. As clear in Figure \ref{fig:res} and Table \ref{tab:meanscores}, there were strong interactions between all three factors. Information on the regression results can be found on Tables \ref{tab:anovascores} and \ref{tab:anovascoresalgo}. 
+Throughout the analyses, we focused on token F-scores separately for each combination of language, level, and type of algorithm. A regression predicting F-scores from language, level, algorithm and their interactions accounted for most of the variance in the data, $R^2=$.`r round(summary(mainLM)$adj.r.squared,2)` ($F(`r summary(mainLM)$df[1]-1`, `r summary(mainLM)$df[2]`) $=$ `r round(summary(mainLM)$fstatistic[1],3)`, $p < $ `r round(p,3)`). As predicted, the coefficient estimating the language effect between Chintang and Japanese is positive (`r round(coefs["languageJapanese","Estimate"],2)`), suggesting higher scores for the latter. Interestingly, this effect is smaller than that of level (`r round(coefs["levelmorphemes","Estimate"],2)`, indicating evaluation on words lead to lower scores than that on morphemes). The presence of all 2- and 3-way interactions, however, discourages a simple reading of these main effects.  
 
 ```{r fig:res, echo=FALSE}
-pdf(paste0(outfolder,"fig:res.pdf"))
-palette(c("black", "red", "green3", "blue", "orange", "gray", "violet", "brown","green1"))
+mycols<-palette(c("black", "red", "blue", "orange", "gray", "violet", "brown","green1"))
 newdata <- parts
 
-newdata$xval= ifelse(newdata$level=="words",0,2) + ifelse(newdata$language=="Chintang",1,2) + (as.numeric(newdata$subalgorithm)/10 - mean(as.numeric(newdata$subalgorithm)/10))
-par(mar=c(5.1, 4.1, 4.1, 8.1), xpd=TRUE)
+newdata$xval= ifelse(newdata$level=="words",0,2) + ifelse(newdata$language=="Chintang",1,2) + (as.numeric(newdata$subalgorithm)/9 - mean(as.numeric(newdata$subalgorithm)/9))
+newdata$col=mycols[as.numeric(newdata$subalgorithm)]
 
-plot(newdata$token_fscore~newdata$xval,col=as.numeric(as.factor(newdata$subalgorithm), palette), pch="x",xaxt='n',xlab="", ylab='Token F-scores', ylim=c(0.1, 0.8), cex.lab = 1.3, cex.axis = 1, main="F-scores for language, algorithm and level", cex.main=1.3)
-axis(1,at=1:4,labels=c("Chintang","Japanese","Chintang","Japanese"), cex.axis = 1.3)
-axis(1,at=c(1.5,3.5),labels=c("Words","Morphemes"),line=2, cex.axis = 1.3)
-legend('topright', inset=c(-0.25,0), legend=c('AGu', 'BTPa', 'FTPa', 'BTPr', 'FTPr', 'DiBS', "Baseline1", "Baseline0.5", "Baseline0"), pch=c("x","x","x","x","x","x", "x", "x", "x"), col=c('black','red', 'green3', 'blue','orange', 'grey', "violet", "brown", "green1"), cex=1, pt.cex=1)
+wholes$xval=  ifelse(wholes$level=="words",0,2) + ifelse(wholes$language=="Chintang",1,2) + (as.numeric(wholes$subalgorithm)/9 - mean(as.numeric(wholes$subalgorithm)/9)) -.03
+wholes$col=mycols[as.numeric(wholes$subalgorithm)]
+
+pdf(paste0(outfolder,"res.pdf"),width=8,height=5)
+par(mar=c(3,3,0.5,0.5), xpd=TRUE)
+plot(newdata$token_fscore~newdata$xval,col=newdata$col, pch="x",xaxt='n',xlab="", ylab='', yaxt='n', ylim=c(0,0.8), cex.lab = 1.3, cex.axis = 1, main="", cex.main=1.3)
+axis(1,at=1:4,labels=c("Chintang","Jap.","Chintang","Jap."), col = NA, cex.axis = 1.3,line=-.5)
+axis(1,at=c(1.5,3.5),labels=c("Words","Morphemes"), col = NA, cex.axis = 1.3, line=.5)
+axis(4,line=-.2,col=NA,col.ticks=1,labels=F)
+axis(2,line=-.2,col=NA,col.ticks=1,labels=F)
+axis(2,line=-.8,col=NA,cex=1.3)
+mtext('Token F-score',2,line=1.2, cex=1.3)
+
+points(wholes$token_fscore~wholes$xval,col=wholes$col, pch=20,cex=1.5)
+
+legend('topleft', inset=c(0,0), legend=levels(newdata$subalgorithm), pch=rep("x",length(levels(newdata$subalgorithm))), col=mycols, cex=1, pt.cex=1.5,ncol=4,x.intersp=0.5)
 
 dev.off()
 ```
