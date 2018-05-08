@@ -19,7 +19,7 @@ args<-commandArgs(trailingOnly=TRUE)
 resfile<-"acqdiv/results.txt"
 statfile="acqdiv/stats.txt"
 folder="/scratch1/users/acristia/acqdiv/" #name of the root where files where stored
-outfolder="~/Documents/acqdiv/" #location you want all figures and temp data to be stored in
+outfolder="~/Dropbox/acqdiv/" #location you want all figures and temp data to be stored in
 
 ```
 
@@ -99,7 +99,7 @@ j_m=stat[!stat$part & stat$full & stat$language=="Japanese" & stat$level=="morph
 
 **The code above allowed us to fill in this paragraph:**
 
-All child-directed and child-overheard speech had been carefully transcribed in a transparent orthography (as well as the child's own speech, which was not analyzed here). After processing, the Chintang corpus contained  `r ch_w$words_tokens` utterances, with an average of `r round(ch_w$words_tokens/ch_w$corpus_nutts,2)` words, `r round(ch_w$syllables_tokens/ch_w$corpus_nutts,2)` syllables, and `r round(ch_w$phones_tokens/ch_w$corpus_nutts,2)` phones per utterance; and the Japanese one `r j_w$words_tokens` utterances, with an average of `r round(j_w$words_tokens/j_w$corpus_nutts,2)` words, `r round(j_w$syllables_tokens/j_w$corpus_nutts,2)` syllables, and `r round(j_w$phones_tokens/j_w$corpus_nutts,2)` phones per utterance. 
+All child-directed and child-overheard speech had been carefully transcribed in a transparent orthography (as well as the child's own speech, which was not analyzed here). After processing, the Chintang corpus contained  `r ch_w$corpus_nutts` utterances, with an average of `r round(ch_w$words_tokens/ch_w$corpus_nutts,2)` words, `r round(ch_w$syllables_tokens/ch_w$corpus_nutts,2)` syllables, and `r round(ch_w$phones_tokens/ch_w$corpus_nutts,2)` phones per utterance; and the Japanese one `r j_w$corpus_nutts` utterances, with an average of `r round(j_w$words_tokens/j_w$corpus_nutts,2)` words, `r round(j_w$syllables_tokens/j_w$corpus_nutts,2)` syllables, and `r round(j_w$phones_tokens/j_w$corpus_nutts,2)` phones per utterance. 
 
 ## General results section
 
@@ -150,62 +150,14 @@ dev.off()
 Token F-scores across language and representational level. Models are marked by color. Datapoints spread vertically are the results for the ten subsets of each corpus.
 
 ```{r tab:meanscores, echo=FALSE}
-aggregate(parts$token_fscore,by=list(parts$subalgorithm,parts$language,parts$level),mean)->tab
+mean_and_round<-function(x) round(mean(x,na.rm=T),2)
+aggregate(parts$token_fscore,by=list(parts$subalgorithm,parts$language,parts$level),mean_and_round)->tab
 mytab=as.character(tab$Group.1[tab$Group.2=="Chintang" & tab$Group.3=="words"])
 for(thislang in levels(tab$Group.2)) for(thislev in levels(tab$Group.3)) {mytab=cbind(mytab,tab$x[tab$Group.2==thislang & tab$Group.3==thislev]) ; colnames(mytab)[dim(mytab)[2]]<-paste(thislang,thislev)}
 colnames(mytab)[1]<-"Algorithm"
 mytab
 
-#mean fscores
-# agcw<-mean(data[which(data$language=="Chintang" & data$level=="word" & data$subalgorithm=="AGu"),]$token_fscore)
-# agcm<-mean(data[which(data$language=="Chintang" & data$level=="morphemes" & data$subalgorithm=="AGu"),]$token_fscore)
-# agjw<-mean(data[which(data$language=="Japanese" & data$level=="word" & data$subalgorithm=="AGu"),]$token_fscore)
-# agjm<-mean(data[which(data$language=="Japanese" & data$level=="morphemes" & data$subalgorithm=="AGu"),]$token_fscore)
-# 
-# btpacw<-mean(data[which(data$language=="Chintang" & data$level=="word" & data$subalgorithm=="BTP_abs"),]$token_fscore)
-# btpacm<-mean(data[which(data$language=="Chintang" & data$level=="morphemes" & data$subalgorithm=="BTP_abs"),]$token_fscore)
-# btpajw<-mean(data[which(data$language=="Japanese" & data$level=="word" & data$subalgorithm=="BTP_abs"),]$token_fscore)
-# btpajm<-mean(data[which(data$language=="Japanese" & data$level=="morphemes" & data$subalgorithm=="BTP_abs"),]$token_fscore)
-# 
-# ftpacw<-mean(data[which(data$language=="Chintang" & data$level=="word" & data$subalgorithm=="FTP_abs"),]$token_fscore)
-# ftpacm<-mean(data[which(data$language=="Chintang" & data$level=="morphemes" & data$subalgorithm=="FTP_abs"),]$token_fscore)
-# ftpajw<-mean(data[which(data$language=="Japanese" & data$level=="word" & data$subalgorithm=="FTP_abs"),]$token_fscore)
-# ftpajm<-mean(data[which(data$language=="Japanese" & data$level=="morphemes" & data$subalgorithm=="FTP_abs"),]$token_fscore)
-# 
-# btprcw<-mean(data[which(data$language=="Chintang" & data$level=="word" & data$subalgorithm=="BTP_rel"),]$token_fscore)
-# btprcm<-mean(data[which(data$language=="Chintang" & data$level=="morphemes" & data$subalgorithm=="BTP_rel"),]$token_fscore)
-# btprjw<-mean(data[which(data$language=="Japanese" & data$level=="word" & data$subalgorithm=="BTP_rel"),]$token_fscore)
-# btprjm<-mean(data[which(data$language=="Japanese" & data$level=="morphemes" & data$subalgorithm=="BTP_rel"),]$token_fscore)
-# 
-# ftprcw<-mean(data[which(data$language=="Chintang" & data$level=="word" & data$subalgorithm=="FTP_rel"),]$token_fscore)
-# ftprcm<-mean(data[which(data$language=="Chintang" & data$level=="morphemes" & data$subalgorithm=="FTP_rel"),]$token_fscore)
-# ftprjw<-mean(data[which(data$language=="Japanese" & data$level=="word" & data$subalgorithm=="FTP_rel"),]$token_fscore)
-# ftprjm<-mean(data[which(data$language=="Japanese" & data$level=="morphemes" & data$subalgorithm=="FTP_rel"),]$token_fscore)
-# 
-# dibscw<-mean(data[which(data$language=="Chintang" & data$level=="word" & data$subalgorithm=="DiBS"),]$token_fscore)
-# dibscm<-mean(data[which(data$language=="Chintang" & data$level=="morphemes" & data$subalgorithm=="DiBS"),]$token_fscore)
-# dibsjw<-mean(data[which(data$language=="Japanese" & data$level=="word" & data$subalgorithm=="DiBS"),]$token_fscore)
-# dibsjm<-mean(data[which(data$language=="Japanese" & data$level=="morphemes" & data$subalgorithm=="DiBS"),]$token_fscore)
-# 
-# base05cw<-mean(data[which(data$language=="Chintang" & data$level=="word" & data$subalgorithm=="Baseline0.5"),]$token_fscore)
-# base05cm<-mean(data[which(data$language=="Chintang" & data$level=="morphemes" & data$subalgorithm=="Baseline0.5"),]$token_fscore)
-# base05jw<-mean(data[which(data$language=="Japanese" & data$level=="word" & data$subalgorithm=="Baseline0.5"),]$token_fscore)
-# base05jm<-mean(data[which(data$language=="Japanese" & data$level=="morphemes" & data$subalgorithm=="Baseline0.5"),]$token_fscore)
-# 
-# base0cw<-mean(data[which(data$language=="Chintang" & data$level=="word" & data$subalgorithm=="Baseline0"),]$token_fscore)
-# base0cm<-mean(data[which(data$language=="Chintang" & data$level=="morphemes" & data$subalgorithm=="Baseline0"),]$token_fscore)
-# base0jw<-mean(data[which(data$language=="Japanese" & data$level=="word" & data$subalgorithm=="Baseline0"),]$token_fscore)
-# base0jm<-mean(data[which(data$language=="Japanese" & data$level=="morphemes" & data$subalgorithm=="Baseline0"),]$token_fscore)
-# 
-# base1cw<-mean(data[which(data$language=="Chintang" & data$level=="word" & data$subalgorithm=="Baseline1"),]$token_fscore)
-# base1cm<-mean(data[which(data$language=="Chintang" & data$level=="morphemes" & data$subalgorithm=="Baseline1"),]$token_fscore)
-# base1jw<-mean(data[which(data$language=="Japanese" & data$level=="word" & data$subalgorithm=="Baseline1"),]$token_fscore)
-# base1jm<-mean(data[which(data$language=="Japanese" & data$level=="morphemes" & data$subalgorithm=="Baseline1"),]$token_fscore)
-# 
-# 
-# matrix<-matrix( c("AG", round(agcw,3), round(agcm,3), round(agjw,3), round(agjm,3), "BTPa", round(btpacw,3), round(btpacm,3), round(btpajw,3), round(btpajm,3), "FTPa", round(ftpacw,3), round(ftpacm,3), round(ftpajw,3), round(ftpajm,3), "BTPr", round(btprcw,3), round(btprcm,3), round(btprjw,3), round(btprjm,3), "FTPr", round(ftprcw,3), round(ftprcm,3), round(ftprjw,3), round(ftprjm,3), "DiBS", round(dibscw,3), round(dibscm,3), round(dibsjw,3), round(dibsjm,3), "Baseline0.5",round(base05cw,3), round(base05cm,3), round(base05jw,3), round(base05jm,3), "Baseline0",round(base0cw,3), round(base0cm,3), round(base0jw,3), round(base0jm,3),"Baseline1",round(base1cw,3), round(base1cm,3), round(base1jw,3), round(base1jm,3) ), nrow=9,   ncol=5, byrow=TRUE)
-
-write.table(mytab, paste0(outfolder,"meanscores.txt"), row.names=F, sep="\t&\t", quote = F )
+write.table(mytab, paste0(outfolder,"meanscores.txt"), row.names=F, sep="\t&\t", eol="\t\\\\\n", quote = F )
 
 ```
 
@@ -217,8 +169,8 @@ library(car)
 fitanova<-Anova(mainLM, type=3)
 table <- as.data.frame(fitanova)
 table
-table[,-1] <-round(table[,-1],3)
-write.table(table,paste0(outfolder,"anovascores.txt"), sep="\t&\t",quote = F)
+table <-round(table,2)
+write.table(table,paste0(outfolder,"anovascores.txt"), sep="\t&\t", eol="\t\\\\\n",quote = F)
 ```
 
 Analysis of variance (anova type III) results for all factors (language, algorithm and level) and their interactions on a linear regression where token F-scores are the dependent variable.
@@ -238,7 +190,7 @@ for(thisalgo in c("AG", "BTPa", "FTPa", "BTPr", "FTPr", "DiBS")){
 
 rownames(mytab)<-c("language", "level", "language:level")
 mytab
-write.table(mytab, paste0(outfolder,"anovaalgorithms.txt"), sep="\t&\t", quote = F )
+write.table(mytab, paste0(outfolder,"anovaalgorithms.txt"), sep="\t&\t", eol="\t\\\\\n", quote = F )
 
 ```
 
@@ -260,7 +212,7 @@ word_length_LM=summary(lm(token_fscore~phonesPerWord*language*subalgorithm + (1 
 word_length_LM
 ```
 
-We also inquired whether sheer word length, previously evoked by \citet{saksida2017co}, may explain away the language effects found here. As a reminder, Chintang has an average word length of `r round(ch_w$phones_tokens/ch_w$words_tokens,3) ` phones and `r round(ch_w$syllables_tokens/ch_w$words_tokens,3)` syllables; whereas for Japanese these are `r round(j_w$phones_tokens/ch_w$words_tokens,3) ` phones and `r round(j_w$syllables_tokens/ch_w$words_tokens,3)` respectively. A regression predicting token f-score on the word level from average word length (in phonemes), among the other two factors (language and algorithm), across the corpora led to a non-significant coefficient estimate of `r word_length_LM$coefficients[2,1]`( `r word_length_LM$coefficients[2,2] `). 
+We also inquired whether sheer word length, previously evoked by \citet{saksida2017co}, may explain away the language effects found here. As a reminder, Chintang has an average word length of `r round(ch_w$phones_tokens/ch_w$words_tokens,3) ` phones and `r round(ch_w$syllables_tokens/ch_w$words_tokens,3)` syllables; whereas for Japanese these are `r round(j_w$phones_tokens/j_w$words_tokens,3) ` phones and `r round(j_w$syllables_tokens/j_w$words_tokens,3)` respectively. A regression predicting token f-score on the word level from average word length (in phonemes), among the other two factors (language and algorithm), across the corpora led to a non-significant coefficient estimate of `r word_length_LM$coefficients[2,1]`( `r word_length_LM$coefficients[2,2] `). 
 
 ```{r sentl-ana}
 sent_length_LM=summary(lm(token_fscore~syllablesPerUtt*language*subalgorithm + (1 / file), subset=c(level=="words"), parts ))
@@ -304,7 +256,7 @@ fit_statistics<-cbind(array1,array2)
 colnames(fit_statistics)<-c("$R^2$ Factor","$R^2$ Factor*Lang*Algo")
 row.names(fit_statistics)<-c("entropy (NSA)","phones/word","syll/utt","w tok/typ","prop. hapax")
 fit_statistics
-write.table(fit_statistics, paste0(outfolder,"tab_fit_statistics.txt"), sep="\t&\t", quote = F )
+write.table(fit_statistics, paste0(outfolder,"tab_fit_statistics.txt"), sep="\t&\t", eol="\t\\\\\n", quote = F )
 ```
 
 Percentage of variance explained ($R^2$) predicting F-scores (word level only) from 1. only the factor given in the first column; 2. language and algorithm (but not the potentially confounded factor); 3. language, algorithm, and the factor.
@@ -322,7 +274,7 @@ scores_full<-cbind(wholes[wholes$language =='Chintang' & wholes$level =="word","
 rownames(scores_full)<-levels(wholes$subalgorithm)
 colnames(scores_full)<-c("word Chintang", "word Japanese", "morpheme Chintang", "morpheme Japanese")
 scores_full
-write.table(scores_full, paste0(outfolder,"scores_full.txt"),  sep="\t&\t", quote = F )
+write.table(scores_full, paste0(outfolder,"scores_full.txt"),  sep="\t&\t", eol="\t\\\\\n", quote = F )
 
 ```
 
@@ -336,7 +288,7 @@ stars=ifelse(ps < .001,"***",ifelse(ps < .01,"**",ifelse(ps < .05,"*","")))
 mytab=cbind(paste0(temp[,1]," (", temp[,2],")"),stars)
 colnames(mytab)<-c("Estimate", "Pr($>|t|$)") 
 mytab
-write.table(mytab,paste0(outfolder,"tab_detailed_fit.txt"),sep="\t&\t",eol="\n",quote = F)
+write.table(mytab,paste0(outfolder,"tab_detailed_fit.txt"),sep="\t&\t", eol="\t\\\\\n",quote = F)
 
 ```
 
@@ -380,7 +332,7 @@ subset(data,!is.na(corpus))->data
 chintang_only<-cbind(data[data$language =='Chintang' & data$level =="morphemes","token_fscore"], 
                       data[data$language =='Chintang' & data$level =="word","token_fscore"])
 colnames(chintang_only)=c("morphemes", "words")
-write.table(chintang_only, paste0(outfolder,"chintang_only.txt"),  sep="\t&\t", quote = F )
+write.table(chintang_only, paste0(outfolder,"chintang_only.txt"),  sep="\t&\t", eol="\t\\\\\n", quote = F )
 
 ```
 
