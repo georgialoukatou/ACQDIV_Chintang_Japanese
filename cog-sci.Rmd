@@ -299,13 +299,12 @@ Regression results for factors and interactions.
 ```{r fig:prerew}
 library(ggplot2)
 worddata <- parts[parts$level =='words',]
-p <- ggplot(worddata, aes(token_precision, y=token_recall)) + ggtitle( 'Word Level, precision and recall')  + geom_point(aes(colour=language, shape=subalgorithm), size = 3) 
+p <- ggplot(worddata, aes(token_precision, y=token_recall)) +  scale_shape_manual(values = c(4,7,16,8,15,3,17,5)) + ggtitle( 'Word Level, precision and recall')  + geom_point(aes(colour=language, shape=subalgorithm), size = 3) 
 p<-p+ theme(panel.background = element_rect(fill = 'white', colour = 'black'))
-p + scale_color_hue(l=40, c=35)
 p<-p+ scale_x_continuous(limits = c(0.2, 0.7))
 p<-p+ scale_y_continuous(limits = c(0.2, 0.7))
+p<-p + scale_color_hue(l=40, c=35)
 print(p)
-```
 
 Precision and Recall for all algorithms and languages on the word representational level.
 
@@ -313,11 +312,11 @@ Precision and Recall for all algorithms and languages on the word representation
 
 ```{r fig:prerem}
 morphdata <- parts[ data$level =='morphemes',]
-p <- ggplot(morphdata, aes(token_precision, y=token_recall)) + ggtitle( 'Morpheme Level, precision and recall')  + geom_point(aes(colour=language, shape=subalgorithm), size = 3) 
+p <- ggplot(morphdata, aes(token_precision, y=token_recall)) +  scale_shape_manual(values = c(4,7,16,8,15,3,17,5)) + ggtitle( 'Morpheme Level, precision and recall')  + geom_point(aes(colour=language, shape=subalgorithm), size = 3) 
 p<-p+ theme(panel.background = element_rect(fill = 'white', colour = 'black'))
-p + scale_color_hue(l=40, c=35)
 p<-p+ scale_x_continuous(limits = c(0.2, 0.7))
 p<-p+ scale_y_continuous(limits = c(0.2, 0.7))
+p<- p + scale_color_hue(l=40, c=35)
 print(p)
 ```
 
