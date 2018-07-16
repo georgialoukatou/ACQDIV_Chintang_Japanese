@@ -72,7 +72,7 @@ merge(data,stat,by="file")->data
 data$syllablesPerUtt=data$syllables_tokens/data$corpus_nutts
 data$phonesPerWord=data$phones_tokens/data$words_tokens
 data$words_hapax_ratio=data$words_hapaxes/data$words_types
-data$wtokens_wtypes_ratio=data$words_tokens/data$words_types
+data$wtypes_wtokens_ratio=data$words_types/data$words_tokens
 
 write.table(data[grep("full",data$file),],paste0(outfolder,"/res-stat.txt"),row.names=F,quote=T,sep=",")
 write.table(data[grep("noforeign",data$file),],paste0(outfolder,"/res-stat-noforeign.txt"),row.names=F,quote=T,sep=",")
