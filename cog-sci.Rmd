@@ -36,10 +36,10 @@ summary(data)
 data$fscores=data$token_fscore
 
 #clean up and extract info from files named like /scratch1/users/acristia/acqdiv//Chintang/morphemes/full-tags.txt_eval.ag.txt
-# and like Japanese/words/full_part9/tags.txt_eval.ftp_rel.txt
+# and like /scratch1/users/acristia/acqdiv//Japanese/words/full_part9/tags.txt_eval.ftp_rel.txt
 data$folder=gsub("//","/",data$folder)
 data$folder=gsub(folder,"",data$folder)
-data$language=gsub("/.*", "", gsub("/scratch1/users/gloukatou/acqdiv/","",data$folder))
+data$language=gsub("/.*", "", gsub("/scratch1/users/.*/acqdiv/","",data$folder))
 data$level=gsub("/.*","",gsub(".*[ge]/","",data$folder))
 data$subalgorithm=gsub(".txt","",gsub(".*eval.","",data$folder))
 data$subalgorithm=gsub("ag","AG",data$subalgorithm)
@@ -298,7 +298,7 @@ Regression results for factors and interactions.
 
 ```{r fig:prerew}
 library(ggplot2)
-worddata <- parts[parts$level =='word',]
+worddata <- parts[parts$level =='words',]
 p <- ggplot(worddata, aes(token_precision, y=token_recall)) + ggtitle( 'Word Level, precision and recall')  + geom_point(aes(colour=language, shape=subalgorithm), size = 3) 
 p<-p+ theme(panel.background = element_rect(fill = 'white', colour = 'black'))
 p + scale_color_hue(l=40, c=35)
