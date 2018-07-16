@@ -1,7 +1,7 @@
 ---
 title: "Supplementary materials to wordseg-xling"
-author: "alejandrina cristia"
-date: "4/27/2018"
+author: "alejandrina cristia, georgia loukatou"
+date: "4/27/2018, 16/07/2018 "
 output: html_document
 ---
 
