@@ -331,7 +331,7 @@ subset(data,!is.na(corpus))->data
 chintang_only<-cbind(data[data$language =='Chintang' & data$level =="morphemes","token_fscore"], 
                       data[data$language =='Chintang' & data$level =="words","token_fscore"])
 colnames(chintang_only)=c("morphemes", "words")
-write.table(chintang_only, paste0(outfolder,"chintang_only.txt"),  sep="\t&\t", eol="\t\\\\\n", quote = F )
+write.table(chintang_only, paste(outfolder,"chintang_only.txt"),  sep="\t&\t", eol="\t\\\\\n", quote = F )
 
 ```
 
