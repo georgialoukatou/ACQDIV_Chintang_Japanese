@@ -222,7 +222,7 @@ The number of syllables per utterance, which is `r round(ch_w$syllables_tokens/c
 
 ```{r rep-ana}
 
-wtt_LM=summary(lm(token_fscore~wtokens_wtypes_ratio*language*subalgorithm + (1 / file), subset=c(level=="words"), parts ))
+wtt_LM=summary(lm(token_fscore~wtypes_wtokens_ratio*language*subalgorithm + (1 / file), subset=c(level=="words"), parts ))
 wtt_LM
 
 hap_LM=summary(lm(token_fscore~words_hapax_ratio*language*subalgorithm + (1 / file), subset=c(level=="words"), parts ))
@@ -267,8 +267,8 @@ Percentage of variance explained ($R^2$) predicting F-scores (word level only) f
 ### check -- the necessary results do not exist yet.
 
 ```{r tab:meanscores_full, eval=RECALC}
-scores_full<-cbind(wholes[wholes$language =='Chintang' & wholes$level =="word","token_fscore"], 
-                       wholes[wholes$language =='Japanese' & wholes$level =="word","token_fscore"], 
+scores_full<-cbind(wholes[wholes$language =='Chintang' & wholes$level =="words","token_fscore"], 
+                       wholes[wholes$language =='Japanese' & wholes$level =="words","token_fscore"], 
                        wholes[wholes$language =='Chintang' & wholes$level =="morphemes","token_fscore"],
                        wholes[wholes$language =='Japanese' & wholes$level =="morphemes","token_fscore"])
 rownames(scores_full)<-levels(wholes$subalgorithm)
@@ -329,7 +329,7 @@ data<-read.csv(paste0(outfolder,"/res-stat-noforeign.txt"))
 subset(data,!is.na(corpus))->data 
 
 chintang_only<-cbind(data[data$language =='Chintang' & data$level =="morphemes","token_fscore"], 
-                      data[data$language =='Chintang' & data$level =="word","token_fscore"])
+                      data[data$language =='Chintang' & data$level =="words","token_fscore"])
 colnames(chintang_only)=c("morphemes", "words")
 write.table(chintang_only, paste0(outfolder,"chintang_only.txt"),  sep="\t&\t", eol="\t\\\\\n", quote = F )
 
