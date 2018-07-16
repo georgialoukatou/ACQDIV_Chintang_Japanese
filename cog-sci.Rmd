@@ -39,7 +39,7 @@ data$fscores=data$token_fscore
 # and like Japanese/words/full_part9/tags.txt_eval.ftp_rel.txt
 data$folder=gsub("//","/",data$folder)
 data$folder=gsub(folder,"",data$folder)
-data$language=gsub("/.*","",data$folder)
+data$language=gsub("/.*", "", gsub("/scratch1/users/gloukatou/acqdiv/","",data$folder))
 data$level=gsub("/.*","",gsub(".*[ge]/","",data$folder))
 data$subalgorithm=gsub(".txt","",gsub(".*eval.","",data$folder))
 data$subalgorithm=gsub("ag","AG",data$subalgorithm)
