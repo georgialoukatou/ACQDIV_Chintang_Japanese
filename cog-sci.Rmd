@@ -43,7 +43,9 @@ data$language=gsub("/.*", "", gsub("/scratch1/users/.*/acqdiv/","",data$folder))
 data$level=gsub("/.*","",gsub(".*[ge]/","",data$folder))
 data$subalgorithm=gsub(".txt","",gsub(".*eval.","",data$folder))
 data$subalgorithm=gsub("ag","AG",data$subalgorithm)
-data$subalgorithm=gsub("linesyll","",data$subalgorithm)
+#data$subalgorithm=gsub("linesyll","",data$subalgorithm)
+data$subalgorithm=gsub("baselinesyll1","Syll=Word",data$subalgorithm)
+data$subalgorithm=gsub("baselinesyll0","Utt=Word",data$subalgorithm)
 data$subalgorithm=gsub("btp_","BTP",data$subalgorithm)
 data$subalgorithm=gsub("ftp_","FTP",data$subalgorithm)
 data$subalgorithm=gsub("rel","r",data$subalgorithm)
@@ -105,7 +107,7 @@ All child-directed and child-overheard speech had been carefully transcribed in 
 
 ```{r res-par1, echo=FALSE}
 read.csv(paste0(outfolder,"/res-stat.txt"))->data
-data$subalgorithm<-factor(data$subalgorithm,c("AG", "BTPa", "FTPa", "BTPr", "FTPr", "DiBS","base1","base0"))
+data$subalgorithm<-factor(data$subalgorithm,c("AG", "BTPa", "FTPa", "BTPr", "FTPr", "DiBS","Syll=Word","Utt=Word"))
 data$level<-factor(data$level,c("words", "morphemes"))
 subset(data,!is.na(subcorpus))->parts
 subset(data,!is.na(corpus))->wholes 
